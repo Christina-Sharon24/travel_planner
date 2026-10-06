@@ -28,7 +28,10 @@ class TripResultPage6 extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(destination, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          destination,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: const Color(0xFF00796B),
         foregroundColor: Colors.white,
       ),
@@ -47,7 +50,10 @@ class TripResultPage6 extends StatelessWidget {
                   bottom: 16,
                   left: 20,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black54,
                       borderRadius: BorderRadius.circular(10),
@@ -69,12 +75,15 @@ class TripResultPage6 extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('ESTIMATED COST BREAKDOWN',
-                      style: TextStyle(
-                          color: Color(0xFF00796B),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          letterSpacing: 1.1)),
+                  const Text(
+                    'ESTIMATED COST BREAKDOWN',
+                    style: TextStyle(
+                      color: Color(0xFF00796B),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
                   const SizedBox(height: 10),
                   Container(
                     padding: const EdgeInsets.all(20),
@@ -83,9 +92,10 @@ class TripResultPage6 extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: const [
                         BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 10,
-                            offset: Offset(0, 4))
+                          color: Colors.black12,
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
                       ],
                     ),
                     child: Column(
@@ -95,7 +105,13 @@ class TripResultPage6 extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Total Calculated Expense', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                              const Text(
+                                'Total Calculated Expense',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
                               const SizedBox(height: 4),
                               Text(
                                 '₹ ${totalCalculatedExpense.toStringAsFixed(0)}',
@@ -109,13 +125,29 @@ class TripResultPage6 extends StatelessWidget {
                           ),
                         ),
                         const Divider(height: 25),
-                        _expenseRow(Icons.flight, 'Flight ($travellerCount pax)', '₹ ${flightCost.toStringAsFixed(0)}'),
+                        _expenseRow(
+                          Icons.flight,
+                          'Flight ($travellerCount pax)',
+                          '₹ ${flightCost.toStringAsFixed(0)}',
+                        ),
                         const SizedBox(height: 12),
-                        _expenseRow(Icons.restaurant, 'Food & Dining', '₹ ${foodCost.toStringAsFixed(0)}'),
+                        _expenseRow(
+                          Icons.restaurant,
+                          'Food & Dining',
+                          '₹ ${foodCost.toStringAsFixed(0)}',
+                        ),
                         const SizedBox(height: 12),
-                        _expenseRow(Icons.hotel, 'Accommodation', '₹ ${accommodationCost.toStringAsFixed(0)}'),
+                        _expenseRow(
+                          Icons.hotel,
+                          'Accommodation',
+                          '₹ ${accommodationCost.toStringAsFixed(0)}',
+                        ),
                         const SizedBox(height: 12),
-                        _expenseRow(Icons.medical_services, 'Emergency Fund', '₹ ${emergencyCost.toStringAsFixed(0)}'),
+                        _expenseRow(
+                          Icons.medical_services,
+                          'Emergency Fund',
+                          '₹ ${emergencyCost.toStringAsFixed(0)}',
+                        ),
                       ],
                     ),
                   ),
@@ -128,21 +160,31 @@ class TripResultPage6 extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const SafetyPrepPage7(),
+                            builder: (_) => const SafetyPrepPage7(
+                              destination: '',
+                              duration: '',
+                              travellers: '',
+                              travellerCount: 2,
+                              userBudget: 2,
+                            ),
                           ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF00796B),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         elevation: 4,
                       ),
-                      child: const Text('Safety & Preparation →',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15)),
+                      child: const Text(
+                        'Safety & Preparation →',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -162,14 +204,31 @@ class TripResultPage6 extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: const Color(0xFFE0F2F1), borderRadius: BorderRadius.circular(10)),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE0F2F1),
+                borderRadius: BorderRadius.circular(10),
+              ),
               child: Icon(icon, size: 16, color: const Color(0xFF00796B)),
             ),
             const SizedBox(width: 12),
-            Text(title, style: const TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
-        Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87)),
+        Text(
+          amount,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: Colors.black87,
+          ),
+        ),
       ],
     );
   }
