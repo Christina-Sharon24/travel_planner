@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/screens/food.dart';
 
-class TripPlanPage2 extends StatefulWidget {
-  const TripPlanPage2({super.key});
+class TripPlanPage extends StatefulWidget {
+  const TripPlanPage({super.key});
 
   @override
-  State<TripPlanPage2> createState() => _TripPlanPage2State();
+  State<TripPlanPage> createState() => _TripPlanPageState();
 }
 
-class _TripPlanPage2State extends State<TripPlanPage2> {
+class _TripPlanPageState extends State<TripPlanPage> {
   int days = 5;
   int travellers = 2;
 
@@ -298,7 +298,7 @@ class _TripPlanPage2State extends State<TripPlanPage2> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FoodPreferencesPage3(
+                        builder: (context) => FoodPreferencesPage(
                           destination: selectedDestination,
                           duration: '$days days',
                           travellers: '$travellers travellers',

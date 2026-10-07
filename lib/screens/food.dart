@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'food_recommendations.dart';
 
-class FoodPreferencesPage3 extends StatefulWidget {
+class FoodPreferencesPage extends StatefulWidget {
   final String destination;
   final String duration;
   final String travellers;
   final int travellerCount;
   final double userBudget;
 
-  const FoodPreferencesPage3({
+  const FoodPreferencesPage({
     super.key,
     required this.destination,
     required this.duration,
@@ -19,10 +19,10 @@ class FoodPreferencesPage3 extends StatefulWidget {
   });
 
   @override
-  State<FoodPreferencesPage3> createState() => _FoodPreferencesPage3State();
+  State<FoodPreferencesPage> createState() => _FoodPreferencesPageState();
 }
 
-class _FoodPreferencesPage3State extends State<FoodPreferencesPage3> {
+class _FoodPreferencesPageState extends State<FoodPreferencesPage> {
   String selectedDiet = 'Vegetarian';
   String selectedFoodType = 'Local Food';
   String selectedBudget = 'Budget';
@@ -200,7 +200,7 @@ class _FoodPreferencesPage3State extends State<FoodPreferencesPage3> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FoodRecommendationsPage4(
+                        builder: (context) => FoodRecommendationsPage(
                           destination: widget.destination,
                           duration: widget.duration,
                           travellers: widget.travellers,

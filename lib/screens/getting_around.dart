@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import 'accomodation.dart';
+import 'accommodation.dart';
 
-class GettingAroundPage5 extends StatefulWidget {
+class GettingAroundPage extends StatefulWidget {
   final String destination;
   final String duration;
   final String travellers;
   final int travellerCount;
   final double userBudget;
 
-  const GettingAroundPage5({
+  const GettingAroundPage({
     super.key,
     required this.destination,
     required this.duration,
@@ -19,10 +19,10 @@ class GettingAroundPage5 extends StatefulWidget {
   });
 
   @override
-  State<GettingAroundPage5> createState() => _GettingAroundPage5State();
+  State<GettingAroundPage> createState() => _GettingAroundPage5State();
 }
 
-class _GettingAroundPage5State extends State<GettingAroundPage5> {
+class _GettingAroundPage5State extends State<GettingAroundPage> {
   String selectedAirport = '';
   String selectedCityTransport = '';
 
@@ -459,7 +459,7 @@ class _GettingAroundPage5State extends State<GettingAroundPage5> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => StaySuggestionsPage6(
+                        builder: (context) => StaySuggestionsPage(
                           destination: widget.destination,
                           duration: widget.duration,
                           travellers: widget.travellers,

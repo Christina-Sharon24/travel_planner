@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'trip_result.dart';
 
-class StaySuggestionsPage6 extends StatelessWidget {
+class StaySuggestionsPage extends StatelessWidget {
   final String destination;
   final String duration;
   final String travellers;
   final int travellerCount;
   final double userBudget;
 
-  const StaySuggestionsPage6({
+  const StaySuggestionsPage({
     super.key,
     required this.destination,
     required this.duration,

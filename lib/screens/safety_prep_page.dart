@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'sos_page.dart';
 import 'tripready.dart';
 
-class SafetyPrepPage8 extends StatefulWidget {
+class SafetyPrepPage extends StatefulWidget {
   final String destination;
   final String duration;
   final String travellers;
   final int travellerCount;
   final double userBudget;
 
-  const SafetyPrepPage8({
+  const SafetyPrepPage({
     super.key,
     required this.destination,
     required this.duration,
@@ -20,10 +20,10 @@ class SafetyPrepPage8 extends StatefulWidget {
   });
 
   @override
-  State<SafetyPrepPage8> createState() => _SafetyPrepPageState();
+  State<SafetyPrepPage> createState() => _SafetyPrepPageState();
 }
 
-class _SafetyPrepPageState extends State<SafetyPrepPage8> {
+class _SafetyPrepPageState extends State<SafetyPrepPage> {
   late List<String> checklist;
   late List<String> tips;
 
@@ -495,7 +495,7 @@ class _SafetyPrepPageState extends State<SafetyPrepPage8> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const SosPage()),
+                  MaterialPageRoute(builder: (_) => const SosPage(destination: '', emergencyNumber: '',)),
                 );
               },
               icon: const Icon(Icons.emergency, color: Colors.white),

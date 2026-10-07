@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'getting_around.dart';
 
-class FoodRecommendationsPage4 extends StatelessWidget {
+class FoodRecommendationsPage extends StatelessWidget {
   final String destination;
   final String duration;
   final String travellers;
@@ -14,7 +14,7 @@ class FoodRecommendationsPage4 extends StatelessWidget {
   final String foodBudget;
   final String foodPreference;
 
-  const FoodRecommendationsPage4({
+  const FoodRecommendationsPage({
     super.key,
     required this.destination,
     required this.duration,
@@ -533,7 +533,7 @@ class FoodRecommendationsPage4 extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GettingAroundPage5(
+                        builder: (context) => GettingAroundPage(
                           destination: destination,
                           duration: duration,
                           travellers: travellers,

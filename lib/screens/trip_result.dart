@@ -283,7 +283,7 @@ class TripResultPage7 extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SafetyPrepPage7(
+                        builder: (context) => SafetyPrepPage(
                           destination: destination,
                           duration: duration,
                           travellers: travellers,
