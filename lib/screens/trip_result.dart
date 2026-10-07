@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/screens/safety_prep_page.dart';
 
-class TripResultPage6 extends StatelessWidget {
+class TripResultPage7 extends StatelessWidget {
   final String destination;
   final String duration;
   final String travellers;
   final double userBudget;
   final int travellerCount;
 
-  const TripResultPage6({
+  const TripResultPage7({
     super.key,
     required this.destination,
     required this.duration,
@@ -19,214 +19,392 @@ class TripResultPage6 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double flightCost = userBudget * 0.35 * travellerCount;
-    final double foodCost = userBudget * 0.20 * travellerCount;
+    final double transportCost = userBudget * 0.35;
+    final double foodCost = userBudget * 0.20;
     final double accommodationCost = userBudget * 0.30;
     final double emergencyCost = userBudget * 0.15;
-    final double totalCalculatedExpense =
-        flightCost + foodCost + accommodationCost + emergencyCost;
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAF9),
       appBar: AppBar(
-        title: Text(
-          destination,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFF00796B),
+        backgroundColor: const Color(0xFF155E75),
         foregroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          'Trip Summary',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                Image.network(
-                  'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1000&q=80',
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Your Trip Plan',
+                style: TextStyle(
+                  fontSize: 21,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF183B4E),
                 ),
-                Positioned(
-                  bottom: 16,
-                  left: 20,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      '$duration • $travellers',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+              ),
+
+              const SizedBox(height: 7),
+
+              const Text(
+                'Here is a quick overview of the trip you planned.',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF64748B),
+                ),
+              ),
+
+              const SizedBox(height: 22),
+
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: const Color(0xFFD9E2E7),
                   ),
                 ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'ESTIMATED COST BREAKDOWN',
-                    style: TextStyle(
-                      color: Color(0xFF00796B),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                      letterSpacing: 1.1,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 10,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
+                        Container(
+                          width: 45,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE6F4F1),
+                            borderRadius: BorderRadius.circular(11),
+                          ),
+                          child: const Icon(
+                            Icons.location_on_outlined,
+                            color: Color(0xFF155E75),
+                            size: 23,
+                          ),
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        Expanded(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Total Calculated Expense',
+                                'Destination',
                                 style: TextStyle(
-                                  color: Colors.grey,
                                   fontSize: 12,
+                                  color: Color(0xFF64748B),
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 3),
                               Text(
-                                '₹ ${totalCalculatedExpense.toStringAsFixed(0)}',
+                                destination,
                                 style: const TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w900,
-                                  color: Color(0xFF004D40),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF183B4E),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const Divider(height: 25),
-                        _expenseRow(
-                          Icons.flight,
-                          'Flight ($travellerCount pax)',
-                          '₹ ${flightCost.toStringAsFixed(0)}',
+                      ],
+                    ),
+
+                    const SizedBox(height: 17),
+
+                    const Divider(
+                      color: Color(0xFFE6ECEF),
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _tripDetail(
+                            Icons.calendar_month_outlined,
+                            'Duration',
+                            duration,
+                          ),
                         ),
-                        const SizedBox(height: 12),
-                        _expenseRow(
-                          Icons.restaurant,
-                          'Food & Dining',
-                          '₹ ${foodCost.toStringAsFixed(0)}',
-                        ),
-                        const SizedBox(height: 12),
-                        _expenseRow(
-                          Icons.hotel,
-                          'Accommodation',
-                          '₹ ${accommodationCost.toStringAsFixed(0)}',
-                        ),
-                        const SizedBox(height: 12),
-                        _expenseRow(
-                          Icons.medical_services,
-                          'Emergency Fund',
-                          '₹ ${emergencyCost.toStringAsFixed(0)}',
+                        Expanded(
+                          child: _tripDetail(
+                            Icons.people_outline,
+                            'Travellers',
+                            '$travellerCount',
+                          ),
                         ),
                       ],
                     ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              const Text(
+                'Estimated Budget',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF183B4E),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(17),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: const Color(0xFFD9E2E7),
                   ),
-                  const SizedBox(height: 25),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 54,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const SafetyPrepPage7(
-                              destination: '',
-                              duration: '',
-                              travellers: '',
-                              travellerCount: 2,
-                              userBudget: 2,
-                            ),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Total Trip Budget',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Color(0xFF64748B),
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00796B),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
                         ),
-                        elevation: 4,
-                      ),
-                      child: const Text(
-                        'Safety & Preparation →',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                        Text(
+                          '₹${userBudget.toStringAsFixed(0)}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF155E75),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 17),
+
+                    const Divider(
+                      color: Color(0xFFE6ECEF),
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    _expenseRow(
+                      Icons.directions_bus_outlined,
+                      'Transport',
+                      transportCost,
+                    ),
+
+                    const SizedBox(height: 13),
+
+                    _expenseRow(
+                      Icons.restaurant_outlined,
+                      'Food & Dining',
+                      foodCost,
+                    ),
+
+                    const SizedBox(height: 13),
+
+                    _expenseRow(
+                      Icons.hotel_outlined,
+                      'Accommodation',
+                      accommodationCost,
+                    ),
+
+                    const SizedBox(height: 13),
+
+                    _expenseRow(
+                      Icons.shield_outlined,
+                      'Emergency Fund',
+                      emergencyCost,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE6F4F1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.check_circle_outline,
+                      size: 20,
+                      color: Color(0xFF155E75),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Your trip plan is ready for $destination. Next, prepare for a safer and smoother journey.',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF183B4E),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 23),
+
+              SizedBox(
+                width: double.infinity,
+                height: 49,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SafetyPrepPage7(
+                          destination: destination,
+                          duration: duration,
+                          travellers: travellers,
+                          travellerCount: travellerCount,
+                          userBudget: userBudget,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF155E75),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Safety & Preparation',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(width: 7),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 19,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _expenseRow(IconData icon, String title, String amount) {
+  Widget _tripDetail(
+      IconData icon,
+      String title,
+      String value,
+      ) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
+        Icon(
+          icon,
+          size: 19,
+          color: const Color(0xFF155E75),
+        ),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE0F2F1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(icon, size: 16, color: const Color(0xFF00796B)),
-            ),
-            const SizedBox(width: 12),
             Text(
               title,
               style: const TextStyle(
-                color: Colors.grey,
+                fontSize: 11,
+                color: Color(0xFF64748B),
+              ),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              value,
+              style: const TextStyle(
                 fontSize: 13,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF183B4E),
               ),
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _expenseRow(
+      IconData icon,
+      String title,
+      double amount,
+      ) {
+    return Row(
+      children: [
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: const Color(0xFFE6F4F1),
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Icon(
+            icon,
+            size: 18,
+            color: const Color(0xFF155E75),
+          ),
+        ),
+
+        const SizedBox(width: 10),
+
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+              color: Color(0xFF183B4E),
+            ),
+          ),
+        ),
+
         Text(
-          amount,
+          '₹${amount.toStringAsFixed(0)}',
           style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            color: Colors.black87,
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF183B4E),
           ),
         ),
       ],

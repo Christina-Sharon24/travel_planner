@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:travel_planner/screens/trip_result.dart';
+import 'trip_result.dart';
 
-class StaySuggestionsPage5 extends StatefulWidget {
+class StaySuggestionsPage6 extends StatelessWidget {
   final String destination;
   final String duration;
   final String travellers;
   final int travellerCount;
   final double userBudget;
 
-  const StaySuggestionsPage5({
+  const StaySuggestionsPage6({
     super.key,
     required this.destination,
     required this.duration,
@@ -17,320 +17,549 @@ class StaySuggestionsPage5 extends StatefulWidget {
     required this.userBudget,
   });
 
-  @override
-  State<StaySuggestionsPage5> createState() => _StaySuggestionsPage5State();
-}
+  List<Map<String, dynamic>> getStayOptions() {
+    if (destination == 'Paris, France') {
+      return [
+        {
+          'name': 'Hotel du Centre',
+          'area': 'Near central Paris',
+          'type': 'Budget',
+          'price': '₹5,500 / night',
+          'rating': '4.1',
+          'icon': Icons.hotel_outlined,
+        },
+        {
+          'name': 'Paris City Stay',
+          'area': 'Near Louvre',
+          'type': 'Moderate',
+          'price': '₹9,000 / night',
+          'rating': '4.4',
+          'icon': Icons.apartment_outlined,
+        },
+        {
+          'name': 'Le Grand Paris',
+          'area': 'Central Paris',
+          'type': 'Premium',
+          'price': '₹18,000 / night',
+          'rating': '4.7',
+          'icon': Icons.domain_outlined,
+        },
+      ];
+    }
 
-class _StaySuggestionsPage5State extends State<StaySuggestionsPage5> {
-  String selectedStay = 'Private Room';
+    if (destination == 'Dubai, UAE') {
+      return [
+        {
+          'name': 'Dubai Budget Inn',
+          'area': 'Deira',
+          'type': 'Budget',
+          'price': '₹4,500 / night',
+          'rating': '4.0',
+          'icon': Icons.hotel_outlined,
+        },
+        {
+          'name': 'City View Dubai',
+          'area': 'Bur Dubai',
+          'type': 'Moderate',
+          'price': '₹8,500 / night',
+          'rating': '4.4',
+          'icon': Icons.apartment_outlined,
+        },
+        {
+          'name': 'Marina Grand Hotel',
+          'area': 'Dubai Marina',
+          'type': 'Premium',
+          'price': '₹17,500 / night',
+          'rating': '4.7',
+          'icon': Icons.domain_outlined,
+        },
+      ];
+    }
+
+    if (destination == 'Singapore') {
+      return [
+        {
+          'name': 'Singapore Budget Stay',
+          'area': 'Little India',
+          'type': 'Budget',
+          'price': '₹5,000 / night',
+          'rating': '4.0',
+          'icon': Icons.hotel_outlined,
+        },
+        {
+          'name': 'City Square Hotel',
+          'area': 'Bugis',
+          'type': 'Moderate',
+          'price': '₹9,500 / night',
+          'rating': '4.4',
+          'icon': Icons.apartment_outlined,
+        },
+        {
+          'name': 'Marina Bay Stay',
+          'area': 'Marina Bay',
+          'type': 'Premium',
+          'price': '₹20,000 / night',
+          'rating': '4.8',
+          'icon': Icons.domain_outlined,
+        },
+      ];
+    }
+
+    if (destination == 'London, UK') {
+      return [
+        {
+          'name': 'London Budget Rooms',
+          'area': "Kings' Cross",
+        'type': 'Budget',
+          'price': '₹7,000 / night',
+          'rating': '4.0',
+          'icon': Icons.hotel_outlined,
+        },
+        {
+          'name': 'Central London Stay',
+          'area': 'Westminster',
+          'type': 'Moderate',
+          'price': '₹12,000 / night',
+          'rating': '4.4',
+          'icon': Icons.apartment_outlined,
+        },
+        {
+          'name': 'Royal London Hotel',
+          'area': 'Central London',
+          'type': 'Premium',
+          'price': '₹23,000 / night',
+          'rating': '4.7',
+          'icon': Icons.domain_outlined,
+        },
+      ];
+    }
+
+    if (destination == 'Tokyo, Japan') {
+      return [
+        {
+          'name': 'Tokyo Smart Stay',
+          'area': 'Asakusa',
+          'type': 'Budget',
+          'price': '₹5,500 / night',
+          'rating': '4.1',
+          'icon': Icons.hotel_outlined,
+        },
+        {
+          'name': 'Tokyo City Hotel',
+          'area': 'Shinjuku',
+          'type': 'Moderate',
+          'price': '₹10,000 / night',
+          'rating': '4.5',
+          'icon': Icons.apartment_outlined,
+        },
+        {
+          'name': 'Tokyo Grand Stay',
+          'area': 'Ginza',
+          'type': 'Premium',
+          'price': '₹21,000 / night',
+          'rating': '4.8',
+          'icon': Icons.domain_outlined,
+        },
+      ];
+    }
+
+    if (destination == 'Bangkok, Thailand') {
+      return [
+        {
+          'name': 'Bangkok Budget Rooms',
+          'area': 'Old Town',
+          'type': 'Budget',
+          'price': '₹2,500 / night',
+          'rating': '4.0',
+          'icon': Icons.hotel_outlined,
+        },
+        {
+          'name': 'Bangkok City Hotel',
+          'area': 'Sukhumvit',
+          'type': 'Moderate',
+          'price': '₹5,500 / night',
+          'rating': '4.4',
+          'icon': Icons.apartment_outlined,
+        },
+        {
+          'name': 'Riverside Bangkok',
+          'area': 'Chao Phraya',
+          'type': 'Premium',
+          'price': '₹12,000 / night',
+          'rating': '4.7',
+          'icon': Icons.domain_outlined,
+        },
+      ];
+    }
+
+    if (destination == 'Rome, Italy') {
+      return [
+        {
+          'name': 'Rome Budget Stay',
+          'area': 'Near Termini',
+          'type': 'Budget',
+          'price': '₹5,000 / night',
+          'rating': '4.0',
+          'icon': Icons.hotel_outlined,
+        },
+        {
+          'name': 'Roma City Hotel',
+          'area': 'Near Colosseum',
+          'type': 'Moderate',
+          'price': '₹9,000 / night',
+          'rating': '4.4',
+          'icon': Icons.apartment_outlined,
+        },
+        {
+          'name': 'Roman Grand Hotel',
+          'area': 'Central Rome',
+          'type': 'Premium',
+          'price': '₹17,000 / night',
+          'rating': '4.7',
+          'icon': Icons.domain_outlined,
+        },
+      ];
+    }
+
+    return [
+      {
+        'name': 'City Budget Stay',
+        'area': 'Near city centre',
+        'type': 'Budget',
+        'price': '₹4,000 / night',
+        'rating': '4.0',
+        'icon': Icons.hotel_outlined,
+      },
+      {
+        'name': 'City Comfort Hotel',
+        'area': 'Central area',
+        'type': 'Moderate',
+        'price': '₹7,500 / night',
+        'rating': '4.3',
+        'icon': Icons.apartment_outlined,
+      },
+      {
+        'name': 'Grand City Hotel',
+        'area': 'City centre',
+        'type': 'Premium',
+        'price': '₹14,000 / night',
+        'rating': '4.6',
+        'icon': Icons.domain_outlined,
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
-    final double baseNightCost =
-        widget.userBudget * 0.06 * widget.travellerCount;
+    final stays = getStayOptions();
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAF9),
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(
-          'Stay Suggestions',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: const Color(0xFF00796B),
+        backgroundColor: const Color(0xFF155E75),
+        foregroundColor: Colors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF004D40),
-                  Color(0xFF00796B),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _budgetInfoItem(
-                  'TOTAL BUDGET',
-                  '₹ ${widget.userBudget.toStringAsFixed(0)}',
-                ),
-                _budgetInfoItem(
-                  'DURATION',
-                  widget.duration,
-                ),
-                _budgetInfoItem(
-                  'TRAVELLERS',
-                  widget.travellers,
-                ),
-              ],
-            ),
+        title: const Text(
+          'Accommodation',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
           ),
-          const SizedBox(height: 20),
-          const Text(
-            'BUDGET FRIENDLY',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF00796B),
-            ),
-          ),
-          const SizedBox(height: 10),
-          _buildStayCard(
-            title: 'PRIVATE ROOM',
-            nightRate: baseNightCost,
-            totalRate: baseNightCost * 5,
-            features:
-            '• Private room\n• Attached bathroom\n• 24-hour reception\n• Near public transport',
-            badge: '',
-            icon: Icons.meeting_room,
-          ),
-          const SizedBox(height: 15),
-          const Text(
-            'COMFORT OPTION',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF00796B),
-            ),
-          ),
-          const SizedBox(height: 10),
-          _buildStayCard(
-            title: 'HOTEL SUITE',
-            nightRate: baseNightCost * 1.5,
-            totalRate: baseNightCost * 1.5 * 5,
-            features:
-            '• King size bed\n• Breakfast included\n• Free Wi-Fi & Gym\n• City center view',
-            badge: 'POPULAR CHOICE 🔥',
-            icon: Icons.hotel,
-          ),
-          const SizedBox(height: 15),
-          const Text(
-            'LOWER COST OPTION',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF00796B),
-            ),
-          ),
-          const SizedBox(height: 10),
-          _buildStayCard(
-            title: 'HOSTEL PRIVATE ROOM',
-            nightRate: baseNightCost * 0.7,
-            totalRate: baseNightCost * 0.7 * 5,
-            features:
-            '• Private room\n• Common lounge\n• Luggage storage\n• Budget friendly',
-            badge: '',
-            icon: Icons.house_outlined,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStayCard({
-    required String title,
-    required double nightRate,
-    required double totalRate,
-    required String features,
-    required String badge,
-    required IconData icon,
-  }) {
-    final bool isSelected = selectedStay == title;
-
-    return GestureDetector(
-      onTap: () => setState(() => selectedStay = title),
-      child: Container(
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected
-                ? const Color(0xFF00796B)
-                : Colors.transparent,
-            width: 2.5,
-          ),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 8,
-              offset: Offset(0, 4),
-            ),
-          ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Where will you stay in $destination?',
+                style: const TextStyle(
+                  fontSize: 21,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF183B4E),
+                ),
+              ),
+              const SizedBox(height: 7),
+              const Text(
+                'Choose a stay that fits your trip and budget.',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF64748B),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF1E7),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE0F2F1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        icon,
-                        color: const Color(0xFF00796B),
-                      ),
+                    const Icon(
+                      Icons.account_balance_wallet_outlined,
+                      size: 20,
+                      color: Color(0xFFF4A261),
                     ),
-                    const SizedBox(width: 12),
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Color(0xFF004D40),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Your total trip budget is ₹${userBudget.toStringAsFixed(0)}',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF183B4E),
+                        ),
                       ),
                     ),
                   ],
                 ),
-                if (badge.isNotEmpty)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.amber.shade100,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      badge,
-                      style: const TextStyle(
-                        color: Colors.deepOrange,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 14),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '₹${nightRate.toStringAsFixed(0)} / night',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                    color: Colors.grey,
-                  ),
-                ),
-                Text(
-                  '₹${totalRate.toStringAsFixed(0)} total',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Color(0xFF00796B),
-                  ),
-                ),
-              ],
-            ),
-            const Divider(height: 20),
-            Text(
-              features,
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 13,
-                height: 1.4,
               ),
-            ),
-            const SizedBox(height: 14),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() => selectedStay = title);
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => TripResultPage6(
-                        destination: widget.destination,
-                        duration: widget.duration,
-                        travellers: widget.travellers,
-                        userBudget: widget.userBudget,
-                        travellerCount: widget.travellerCount,
-                      ),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isSelected
-                      ? const Color(0xFF00796B)
-                      : Colors.grey[200],
-                  foregroundColor:
-                  isSelected ? Colors.white : Colors.black87,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+              const SizedBox(height: 23),
+
+              const Text(
+                'Recommended stays',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF183B4E),
                 ),
-                child: Text(
-                  isSelected ? 'Selected ✓' : 'Select Option',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: isSelected
-                        ? Colors.white
-                        : Colors.black87,
+              ),
+
+              const SizedBox(height: 10),
+
+              ...stays.map(
+                    (stay) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _stayCard(
+                    name: stay['name'],
+                    area: stay['area'],
+                    type: stay['type'],
+                    price: stay['price'],
+                    rating: stay['rating'],
+                    icon: stay['icon'],
                   ),
                 ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 4),
+
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE6F4F1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.lightbulb_outline,
+                      size: 20,
+                      color: Color(0xFF155E75),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'For a lower-cost trip, consider staying slightly outside the city centre with easy public transport access.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF183B4E),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 23),
+
+              SizedBox(
+                width: double.infinity,
+                height: 49,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TripResultPage7(
+                          destination: destination,
+                          duration: duration,
+                          travellers: travellers,
+                          travellerCount: travellerCount,
+                          userBudget: userBudget,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF155E75),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'View Trip Summary',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(width: 7),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 19,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _budgetInfoItem(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 10,
-            color: Colors.white70,
-            fontWeight: FontWeight.bold,
-          ),
+  Widget _stayCard({
+    required String name,
+    required String area,
+    required String type,
+    required String price,
+    required String rating,
+    required IconData icon,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(
+          color: const Color(0xFFD9E2E7),
         ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            color: Colors.white,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: const Color(0xFFE6F4F1),
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: Icon(
+              icon,
+              size: 23,
+              color: const Color(0xFF155E75),
+            ),
           ),
-        ),
-      ],
+
+          const SizedBox(width: 12),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF183B4E),
+                  ),
+                ),
+
+                const SizedBox(height: 4),
+
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on_outlined,
+                      size: 14,
+                      color: Color(0xFF64748B),
+                    ),
+                    const SizedBox(width: 3),
+                    Expanded(
+                      child: Text(
+                        area,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 6),
+
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAF9),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        type,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 7),
+                    const Icon(
+                      Icons.star,
+                      size: 14,
+                      color: Color(0xFFF4A261),
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      rating,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF183B4E),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 8),
+
+          Text(
+            price,
+            textAlign: TextAlign.right,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF155E75),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

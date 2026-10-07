@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'sos_page.dart';
 import 'tripready.dart';
 
-class SafetyPrepPage7 extends StatefulWidget {
+class SafetyPrepPage8 extends StatefulWidget {
   final String destination;
   final String duration;
   final String travellers;
   final int travellerCount;
   final double userBudget;
 
-  const SafetyPrepPage7({
+  const SafetyPrepPage8({
     super.key,
     required this.destination,
     required this.duration,
@@ -19,73 +20,296 @@ class SafetyPrepPage7 extends StatefulWidget {
   });
 
   @override
-  State<SafetyPrepPage7> createState() => _SafetyPrepPageState();
+  State<SafetyPrepPage8> createState() => _SafetyPrepPageState();
 }
 
-class _SafetyPrepPageState extends State<SafetyPrepPage7> {
-  bool passportChecked = true;
-  bool hotelChecked = true;
-  bool insuranceChecked = false;
-  bool chargerChecked = false;
+class _SafetyPrepPageState extends State<SafetyPrepPage8> {
+  late List<String> checklist;
+  late List<String> tips;
+
+  Map<String, dynamic> getSafetyData() {
+    if (widget.destination == 'Paris, France') {
+      return {
+        'alertTitle': 'Crowded Area Advisory',
+        'alertText': 'Stay alert with your belongings in crowded tourist areas, metro stations and major attractions.',
+        'alertColor': const Color(0xFFE76F51),
+        'tips': [
+          'Keep your passport and important documents safely stored.',
+          'Be careful with bags and phones in crowded tourist areas.',
+          'Use official taxis or public transport when travelling around the city.',
+          'Keep your emergency contacts and accommodation address available.',
+        ],
+        'checklist': [
+          'Passport',
+          'Schengen visa / entry requirements',
+          'Travel insurance',
+          'Hotel booking confirmation',
+          'Flight tickets',
+          'Emergency contact numbers',
+        ],
+        'emergency': 'Emergency number: 112',
+      };
+    }
+
+    if (widget.destination == 'Dubai, UAE') {
+      return {
+        'alertTitle': 'Local Laws & Weather Advisory',
+        'alertText': 'Respect local laws and customs and stay hydrated during hot weather.',
+        'alertColor': const Color(0xFFF4A261),
+        'tips': [
+          'Carry your passport and visa documents safely.',
+          'Respect local laws, customs and public behaviour rules.',
+          'Stay hydrated and protect yourself from strong heat.',
+          'Keep your hotel address and emergency details available.',
+        ],
+        'checklist': [
+          'Passport',
+          'UAE visa / entry requirements',
+          'Travel insurance',
+          'Hotel booking confirmation',
+          'Flight tickets',
+          'Emergency contact numbers',
+        ],
+        'emergency': 'Police: 999  •  Ambulance: 998  •  Fire: 997',
+      };
+    }
+
+    if (widget.destination == 'Singapore') {
+      return {
+        'alertTitle': 'Local Rules Advisory',
+        'alertText': 'Follow local regulations carefully and keep important travel documents secure.',
+        'alertColor': const Color(0xFFF4A261),
+        'tips': [
+          'Keep your passport and travel documents secure.',
+          'Follow local public behaviour and transport regulations.',
+          'Keep your accommodation address available.',
+          'Carry your travel insurance information during the trip.',
+        ],
+        'checklist': [
+          'Passport',
+          'Singapore entry requirements',
+          'Travel insurance',
+          'Hotel booking confirmation',
+          'Flight tickets',
+          'Emergency contact numbers',
+        ],
+        'emergency': 'Police: 999  •  Ambulance / Fire: 995',
+      };
+    }
+
+    if (widget.destination == 'London, UK') {
+      return {
+        'alertTitle': 'Crowded Transport Advisory',
+        'alertText': 'Take care of your belongings when using busy stations, underground trains and tourist areas.',
+        'alertColor': const Color(0xFFE76F51),
+        'tips': [
+          'Keep your passport and travel documents secure.',
+          'Take care of your belongings on crowded public transport.',
+          'Check your UK entry and visa requirements before travelling.',
+          'Keep your accommodation address available while exploring.',
+        ],
+        'checklist': [
+          'Passport',
+          'UK visa / entry requirements',
+          'Travel insurance',
+          'Hotel booking confirmation',
+          'Flight tickets',
+          'Emergency contact numbers',
+        ],
+        'emergency': 'Police / Ambulance / Fire: 999 or 112',
+      };
+    }
+
+    if (widget.destination == 'Tokyo, Japan') {
+      return {
+        'alertTitle': 'Earthquake Preparedness',
+        'alertText': 'Japan experiences earthquakes. Know your accommodation emergency procedures and follow local instructions.',
+        'alertColor': const Color(0xFFE76F51),
+        'tips': [
+          'Keep your passport and important documents secure.',
+          'Learn basic earthquake safety procedures before travelling.',
+          'Follow local public transport and public behaviour rules.',
+          'Keep your hotel address available in case you need assistance.',
+        ],
+        'checklist': [
+          'Passport',
+          'Japan visa / entry requirements',
+          'Travel insurance',
+          'Hotel booking confirmation',
+          'Emergency contact numbers',
+          'Check earthquake emergency procedures',
+        ],
+        'emergency': 'Police: 110  •  Ambulance / Fire: 119',
+      };
+    }
+
+    if (widget.destination == 'Bangkok, Thailand') {
+      return {
+        'alertTitle': 'Heat & Crowded Area Advisory',
+        'alertText': 'Stay hydrated in hot weather and take care of your belongings in busy markets and tourist areas.',
+        'alertColor': const Color(0xFFF4A261),
+        'tips': [
+          'Keep your passport and travel documents secure.',
+          'Carry water and protect yourself from strong heat and sun.',
+          'Be careful with belongings in busy markets and transport areas.',
+          'Keep your hotel address and emergency contacts available.',
+        ],
+        'checklist': [
+          'Passport',
+          'Thailand visa / entry requirements',
+          'Travel insurance',
+          'Hotel booking confirmation',
+          'Flight tickets',
+          'Emergency contact numbers',
+        ],
+        'emergency': 'Police: 191  •  Ambulance: 1669',
+      };
+    }
+
+    if (widget.destination == 'Rome, Italy') {
+      return {
+        'alertTitle': 'Crowded Tourist Area Advisory',
+        'alertText': 'Stay alert with your belongings around busy tourist attractions and public transport.',
+        'alertColor': const Color(0xFFE76F51),
+        'tips': [
+          'Keep your passport and important documents safely stored.',
+          'Be careful with your belongings around major tourist attractions.',
+          'Keep your travel insurance information accessible.',
+          'Carry your accommodation address while exploring the city.',
+        ],
+        'checklist': [
+          'Passport',
+          'Schengen visa / entry requirements',
+          'Travel insurance',
+          'Hotel booking confirmation',
+          'Flight tickets',
+          'Emergency contact numbers',
+        ],
+        'emergency': 'Emergency number: 112',
+      };
+    }
+
+    return {
+      'alertTitle': 'Travel Safety Reminder',
+      'alertText': 'Keep your important documents secure and check local travel requirements before your trip.',
+      'alertColor': const Color(0xFFF4A261),
+      'tips': [
+        'Keep your passport and important documents secure.',
+        'Check the entry requirements before travelling.',
+        'Keep your accommodation and emergency details available.',
+        'Carry your travel insurance information during your trip.',
+      ],
+      'checklist': [
+        'Passport',
+        'Visa / entry requirements',
+        'Travel insurance',
+        'Hotel booking confirmation',
+        'Flight tickets',
+        'Emergency contact numbers',
+      ],
+      'emergency': 'Check local emergency numbers before travelling',
+    };
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    final data = getSafetyData();
+
+    checklist = List<String>.from(data['checklist']);
+    tips = List<String>.from(data['tips']);
+  }
 
   @override
   Widget build(BuildContext context) {
-    double readiness = 0.5;
-    if (passportChecked) readiness += 0.125;
-    if (hotelChecked) readiness += 0.125;
-    if (insuranceChecked) readiness += 0.125;
-    if (chargerChecked) readiness += 0.125;
+    final data = getSafetyData();
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAF9),
       appBar: AppBar(
         title: const Text(
           'Safety & Preparation',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
+          ),
         ),
-        backgroundColor: const Color(0xFF00796B),
+        backgroundColor: const Color(0xFF155E75),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(18),
         children: [
+          Text(
+            'Prepare for ${widget.destination}',
+            style: const TextStyle(
+              fontSize: 21,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF183B4E),
+            ),
+          ),
+
+          const SizedBox(height: 7),
+
+          Text(
+            '${widget.duration} • ${widget.travellers}',
+            style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+          ),
+
+          const SizedBox(height: 23),
+
           const Text(
-            'SAFETY ALERTS',
+            'SAFETY ALERT',
             style: TextStyle(
               fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF00796B),
-              letterSpacing: 1.1,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF155E75),
+              letterSpacing: 1,
             ),
           ),
+
           const SizedBox(height: 10),
+
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFEBEE),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFFFCDD2)),
+              color: data['alertColor'] == const Color(0xFFE76F51)
+                  ? const Color(0xFFFFF0ED)
+                  : const Color(0xFFFFF4E8),
+              borderRadius: BorderRadius.circular(13),
+              border: Border.all(color: data['alertColor']),
             ),
-            child: const Row(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.warning_amber_rounded, color: Colors.red, size: 30),
-                SizedBox(width: 14),
+                Icon(
+                  Icons.warning_amber_rounded,
+                  color: data['alertColor'],
+                  size: 25,
+                ),
+                const SizedBox(width: 11),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Pickpocketing Advisory',
+                        data['alertTitle'],
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                          fontSize: 15,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: data['alertColor'],
                         ),
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 4),
                       Text(
-                        'Active bag-snatching alerts reported in crowded metro stations and transit hubs.',
-                        style: TextStyle(fontSize: 12, color: Color(0xFF8E0000)),
+                        data['alertText'],
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF64748B),
+                        ),
                       ),
                     ],
                   ),
@@ -93,160 +317,180 @@ class _SafetyPrepPageState extends State<SafetyPrepPage7> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF8E1),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFFFECB3)),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.info_outline, color: Colors.amber, size: 30),
-                SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Common Tourist Scams',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFF57F17),
-                          fontSize: 15,
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'Beware of fake petition signers, unofficial taxi drivers, and overpriced street vendors.',
-                        style: TextStyle(fontSize: 12, color: Color(0xFF795548)),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
+
+          const SizedBox(height: 22),
+
           const Text(
             'ESSENTIAL SAFETY TIPS',
             style: TextStyle(
               fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF00796B),
-              letterSpacing: 1.1,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF155E75),
+              letterSpacing: 1,
             ),
           ),
+
           const SizedBox(height: 10),
+
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: const [
-                BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))
-              ],
+              borderRadius: BorderRadius.circular(13),
+              border: Border.all(color: const Color(0xFFD9E2E7)),
             ),
-            child: const Column(
-              children: [
-                _TipRow('Keep digital copies of ID and passport in secure cloud storage'),
-                Divider(height: 16),
-                _TipRow('Use verified ridesharing apps or official transit passes'),
-                Divider(height: 16),
-                _TipRow('Save local emergency numbers and embassy address offline'),
-                Divider(height: 16),
-                _TipRow('Avoid carrying large sums of physical cash or wearing expensive jewelry'),
-              ],
+            child: Column(
+              children: tips.map((tip) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.check_circle_outline,
+                        color: Color(0xFF2A9D8F),
+                        size: 18,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          tip,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Color(0xFF183B4E),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
           ),
-          const SizedBox(height: 20),
+
+          const SizedBox(height: 22),
+
           const Text(
             'TRIP READINESS CHECKLIST',
             style: TextStyle(
               fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF00796B),
-              letterSpacing: 1.1,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF155E75),
+              letterSpacing: 1,
             ),
           ),
+
           const SizedBox(height: 10),
+
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: const [
-                BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))
-              ],
+              borderRadius: BorderRadius.circular(13),
+              border: Border.all(color: const Color(0xFFD9E2E7)),
             ),
             child: Column(
               children: [
-                CheckboxListTile(
-                  value: passportChecked,
-                  onChanged: (val) => setState(() => passportChecked = val ?? false),
-                  title: const Text('Passport & Visa checked', style: TextStyle(fontWeight: FontWeight.w500)),
-                  activeColor: const Color(0xFF00796B),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                const Divider(height: 1),
-                CheckboxListTile(
-                  value: hotelChecked,
-                  onChanged: (val) => setState(() => hotelChecked = val ?? false),
-                  title: const Text('Hotel Confirmation Vouchers', style: TextStyle(fontWeight: FontWeight.w500)),
-                  activeColor: const Color(0xFF00796B),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                const Divider(height: 1),
-                CheckboxListTile(
-                  value: insuranceChecked,
-                  onChanged: (val) => setState(() => insuranceChecked = val ?? false),
-                  title: const Text('International Travel Insurance', style: TextStyle(fontWeight: FontWeight.w500)),
-                  activeColor: const Color(0xFF00796B),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                const Divider(height: 1),
-                CheckboxListTile(
-                  value: chargerChecked,
-                  onChanged: (val) => setState(() => chargerChecked = val ?? false),
-                  title: const Text('Universal Power Adapter', style: TextStyle(fontWeight: FontWeight.w500)),
-                  activeColor: const Color(0xFF00796B),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                const SizedBox(height: 14),
+                for (int i = 0; i < checklist.length; i++) ...[
+                  CheckboxListTile(
+                    value: _checkedItems[i],
+                    onChanged: (value) {
+                      setState(() {
+                        _checkedItems[i] = value ?? false;
+                      });
+                    },
+                    title: Text(
+                      checklist[i],
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF183B4E),
+                      ),
+                    ),
+                    activeColor: const Color(0xFF155E75),
+                    controlAffinity: ListTileControlAffinity.leading,
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                  ),
+                  if (i != checklist.length - 1)
+                    const Divider(height: 1, color: Color(0xFFE6ECEF)),
+                ],
+
+                const SizedBox(height: 12),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Readiness Score', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    const Text(
+                      'Readiness Score',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF183B4E),
+                      ),
+                    ),
                     Text(
-                      '${(readiness * 100).toInt()}%',
-                      style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF00796B), fontSize: 16),
+                      '${readinessPercentage()}%',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF155E75),
+                      ),
                     ),
                   ],
                 ),
+
                 const SizedBox(height: 8),
+
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: LinearProgressIndicator(
-                    value: readiness,
-                    backgroundColor: Colors.grey[200],
-                    color: const Color(0xFF00796B),
-                    minHeight: 10,
+                    value: readinessPercentage() / 100,
+                    backgroundColor: const Color(0xFFE6ECEF),
+                    color: const Color(0xFF2A9D8F),
+                    minHeight: 9,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 25),
 
-          // SOS BUTTON -> Goes to SosPage
+          const SizedBox(height: 20),
+
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE6F4F1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.phone_outlined,
+                  size: 20,
+                  color: Color(0xFF155E75),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    data['emergency'],
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF183B4E),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 23),
+
           SizedBox(
             width: double.infinity,
-            height: 54,
+            height: 52,
             child: ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
@@ -257,24 +501,24 @@ class _SafetyPrepPageState extends State<SafetyPrepPage7> {
               icon: const Icon(Icons.emergency, color: Colors.white),
               label: const Text(
                 'SOS / Emergency Assistance',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFD32F2F),
+                backgroundColor: const Color(0xFFE76F51),
                 foregroundColor: Colors.white,
-                elevation: 4,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             ),
           ),
+
           const SizedBox(height: 12),
 
-          // FINISH BUTTON -> Goes to TripReadyPage
           SizedBox(
             width: double.infinity,
-            height: 54,
+            height: 52,
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -291,49 +535,37 @@ class _SafetyPrepPageState extends State<SafetyPrepPage7> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00796B),
-                elevation: 4,
+                backgroundColor: const Color(0xFF155E75),
+                foregroundColor: Colors.white,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: const Text(
-                'Finish & Start Journey →',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
+                'Finish & Start Journey',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
               ),
             ),
           ),
+
+          const SizedBox(height: 10),
         ],
       ),
     );
   }
-}
 
-class _TipRow extends StatelessWidget {
-  final String text;
-  const _TipRow(this.text);
+  final List<bool> _checkedItems = [false, false, false, false, false, false];
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Icon(Icons.check_circle, color: Color(0xFF00796B), size: 18),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Colors.black87,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ],
-    );
+  int readinessPercentage() {
+    int completed = 0;
+
+    for (bool item in _checkedItems) {
+      if (item) {
+        completed++;
+      }
+    }
+
+    return ((completed / _checkedItems.length) * 100).toInt();
   }
 }

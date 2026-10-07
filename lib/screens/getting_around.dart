@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:travel_planner/screens/accomodation.dart';
 
-class GettingAroundPage4 extends StatefulWidget {
+import 'accomodation.dart';
+
+class GettingAroundPage5 extends StatefulWidget {
   final String destination;
   final String duration;
   final String travellers;
   final int travellerCount;
   final double userBudget;
 
-  const GettingAroundPage4({
+  const GettingAroundPage5({
     super.key,
     required this.destination,
     required this.duration,
@@ -18,278 +19,566 @@ class GettingAroundPage4 extends StatefulWidget {
   });
 
   @override
-  State<GettingAroundPage4> createState() => _GettingAroundPage4State();
+  State<GettingAroundPage5> createState() => _GettingAroundPage5State();
 }
 
-class _GettingAroundPage4State extends State<GettingAroundPage4> {
-  String airportOption = 'Metro';
-  String cityOption = 'Metro Pass';
+class _GettingAroundPage5State extends State<GettingAroundPage5> {
+  String selectedAirport = '';
+  String selectedCityTransport = '';
+
+  List<Map<String, dynamic>> getTransportData() {
+    if (widget.destination == 'Paris, France') {
+      return [
+        {
+          'airport': [
+            {
+              'name': 'RER B Train',
+              'description': 'Fast and budget friendly',
+              'price': '₹450',
+              'icon': Icons.train_outlined,
+            },
+            {
+              'name': 'Airport Taxi',
+              'description': 'Direct and convenient',
+              'price': '₹4,000',
+              'icon': Icons.local_taxi_outlined,
+            },
+          ],
+          'city': [
+            {
+              'name': 'Metro Pass',
+              'description': 'Convenient for most attractions',
+              'price': '₹1,500',
+              'icon': Icons.directions_subway_outlined,
+            },
+            {
+              'name': 'Bus',
+              'description': 'Comfortable and affordable',
+              'price': '₹900',
+              'icon': Icons.directions_bus_outlined,
+            },
+          ],
+        },
+      ];
+    }
+
+    if (widget.destination == 'Dubai, UAE') {
+      return [
+        {
+          'airport': [
+            {
+              'name': 'Dubai Metro',
+              'description': 'Affordable and well connected',
+              'price': '₹250',
+              'icon': Icons.train_outlined,
+            },
+            {
+              'name': 'Airport Taxi',
+              'description': 'Direct and convenient',
+              'price': '₹1,800',
+              'icon': Icons.local_taxi_outlined,
+            },
+          ],
+          'city': [
+            {
+              'name': 'Metro + Bus',
+              'description': 'Useful across major areas',
+              'price': '₹1,200',
+              'icon': Icons.directions_subway_outlined,
+            },
+            {
+              'name': 'Taxi',
+              'description': 'Easy for short distances',
+              'price': '₹2,500',
+              'icon': Icons.local_taxi_outlined,
+            },
+          ],
+        },
+      ];
+    }
+
+    if (widget.destination == 'Singapore') {
+      return [
+        {
+          'airport': [
+            {
+              'name': 'MRT',
+              'description': 'Fast and affordable',
+              'price': '₹180',
+              'icon': Icons.train_outlined,
+            },
+            {
+              'name': 'Airport Taxi',
+              'description': 'Direct to your stay',
+              'price': '₹1,800',
+              'icon': Icons.local_taxi_outlined,
+            },
+          ],
+          'city': [
+            {
+              'name': 'MRT Pass',
+              'description': 'Best for sightseeing',
+              'price': '₹1,300',
+              'icon': Icons.directions_subway_outlined,
+            },
+            {
+              'name': 'Public Bus',
+              'description': 'Wide city coverage',
+              'price': '₹800',
+              'icon': Icons.directions_bus_outlined,
+            },
+          ],
+        },
+      ];
+    }
+
+    if (widget.destination == 'London, UK') {
+      return [
+        {
+          'airport': [
+            {
+              'name': 'Heathrow Express',
+              'description': 'Fast connection to central London',
+              'price': '₹2,800',
+              'icon': Icons.train_outlined,
+            },
+            {
+              'name': 'Airport Taxi',
+              'description': 'Direct and convenient',
+              'price': '₹7,000',
+              'icon': Icons.local_taxi_outlined,
+            },
+          ],
+          'city': [
+            {
+              'name': 'London Underground',
+              'description': 'Best for major attractions',
+              'price': '₹2,000',
+              'icon': Icons.directions_subway_outlined,
+            },
+            {
+              'name': 'City Bus',
+              'description': 'Affordable and scenic',
+              'price': '₹1,200',
+              'icon': Icons.directions_bus_outlined,
+            },
+          ],
+        },
+      ];
+    }
+
+    if (widget.destination == 'Tokyo, Japan') {
+      return [
+        {
+          'airport': [
+            {
+              'name': 'Airport Train',
+              'description': 'Fast and reliable',
+              'price': '₹1,500',
+              'icon': Icons.train_outlined,
+            },
+            {
+              'name': 'Airport Bus',
+              'description': 'Comfortable and convenient',
+              'price': '₹1,200',
+              'icon': Icons.directions_bus_outlined,
+            },
+          ],
+          'city': [
+            {
+              'name': 'Metro Pass',
+              'description': 'Easy access to attractions',
+              'price': '₹1,600',
+              'icon': Icons.directions_subway_outlined,
+            },
+            {
+              'name': 'City Bus',
+              'description': 'Useful for selected areas',
+              'price': '₹900',
+              'icon': Icons.directions_bus_outlined,
+            },
+          ],
+        },
+      ];
+    }
+
+    if (widget.destination == 'Bangkok, Thailand') {
+      return [
+        {
+          'airport': [
+            {
+              'name': 'Airport Rail Link',
+              'description': 'Fast and affordable',
+              'price': '₹180',
+              'icon': Icons.train_outlined,
+            },
+            {
+              'name': 'Airport Taxi',
+              'description': 'Direct and convenient',
+              'price': '₹900',
+              'icon': Icons.local_taxi_outlined,
+            },
+          ],
+          'city': [
+            {
+              'name': 'BTS Skytrain',
+              'description': 'Useful for central areas',
+              'price': '₹900',
+              'icon': Icons.train_outlined,
+            },
+            {
+              'name': 'Bus',
+              'description': 'Low-cost option',
+              'price': '₹500',
+              'icon': Icons.directions_bus_outlined,
+            },
+          ],
+        },
+      ];
+    }
+
+    if (widget.destination == 'Rome, Italy') {
+      return [
+        {
+          'airport': [
+            {
+              'name': 'Leonardo Express',
+              'description': 'Direct airport train',
+              'price': '₹1,600',
+              'icon': Icons.train_outlined,
+            },
+            {
+              'name': 'Airport Taxi',
+              'description': 'Direct to central Rome',
+              'price': '₹4,500',
+              'icon': Icons.local_taxi_outlined,
+            },
+          ],
+          'city': [
+            {
+              'name': 'Metro Pass',
+              'description': 'Good for major attractions',
+              'price': '₹1,200',
+              'icon': Icons.directions_subway_outlined,
+            },
+            {
+              'name': 'City Bus',
+              'description': 'Budget-friendly option',
+              'price': '₹800',
+              'icon': Icons.directions_bus_outlined,
+            },
+          ],
+        },
+      ];
+    }
+
+    return [
+      {
+        'airport': [
+          {
+            'name': 'Airport Bus',
+            'description': 'Affordable public transport',
+            'price': '₹700',
+            'icon': Icons.directions_bus_outlined,
+          },
+          {
+            'name': 'Airport Taxi',
+            'description': 'Direct and convenient',
+            'price': '₹1,500',
+            'icon': Icons.local_taxi_outlined,
+          },
+        ],
+        'city': [
+          {
+            'name': 'Metro',
+            'description': 'Convenient for city travel',
+            'price': '₹1,000',
+            'icon': Icons.directions_subway_outlined,
+          },
+          {
+            'name': 'Bus',
+            'description': 'Budget-friendly option',
+            'price': '₹700',
+            'icon': Icons.directions_bus_outlined,
+          },
+        ],
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final data = getTransportData().first;
+
+    final airportOptions = data['airport'] as List<Map<String, dynamic>>;
+
+    final cityOptions = data['city'] as List<Map<String, dynamic>>;
+
+    if (selectedAirport.isEmpty) {
+      selectedAirport = airportOptions[0]['name'];
+    }
+
+    if (selectedCityTransport.isEmpty) {
+      selectedCityTransport = cityOptions[0]['name'];
+    }
+
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAF9),
       appBar: AppBar(
-        title: const Text('Getting Around', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF00796B),
+        backgroundColor: const Color(0xFF155E75),
+        foregroundColor: Colors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          'Getting Around',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Transit Options in ${widget.destination}',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Color(0xFF004D40))),
-            const SizedBox(height: 20),
-            const Text('AIRPORT → HOTEL',
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Getting around ${widget.destination}',
+                style: const TextStyle(
+                  fontSize: 21,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF183B4E),
+                ),
+              ),
+              const SizedBox(height: 7),
+              const Text(
+                'Choose how you would like to travel during your trip.',
                 style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF00796B))),
-            const SizedBox(height: 10),
-            // Airport Options
-            GestureDetector(
-              onTap: () => setState(() => airportOption = 'Metro'),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: airportOption == 'Metro' ? const Color(0xFF00796B) : Colors.transparent,
-                      width: 2,
-                    ),
-                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))]),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(color: const Color(0xFFE0F2F1), borderRadius: BorderRadius.circular(12)),
-                          child: const Icon(Icons.train, color: Color(0xFF00796B)),
-                        ),
-                        const SizedBox(width: 14),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Metro', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                            SizedBox(height: 4),
-                            Text('Fast • Budget friendly',
-                                style: TextStyle(color: Colors.grey, fontSize: 12)),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text('₹180',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF00796B),
-                                fontSize: 16)),
-                        const SizedBox(width: 10),
-                        Icon(Icons.check_circle,
-                            color: airportOption == 'Metro' ? const Color(0xFF00796B) : Colors.grey.shade300),
-                      ],
-                    ),
-                  ],
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF64748B),
                 ),
               ),
-            ),
-            const SizedBox(height: 12),
-            GestureDetector(
-              onTap: () => setState(() => airportOption = 'Taxi'),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: airportOption == 'Taxi' ? const Color(0xFF00796B) : Colors.transparent,
-                      width: 2,
-                    ),
-                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))]),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(color: const Color(0xFFE0F2F1), borderRadius: BorderRadius.circular(12)),
-                          child: const Icon(Icons.local_taxi, color: Color(0xFF00796B)),
-                        ),
-                        const SizedBox(width: 14),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Taxi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                            SizedBox(height: 4),
-                            Text('Direct • More convenient',
-                                style: TextStyle(color: Colors.grey, fontSize: 12)),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text('₹1,200',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF00796B),
-                                fontSize: 16)),
-                        const SizedBox(width: 10),
-                        Icon(Icons.check_circle,
-                            color: airportOption == 'Taxi' ? const Color(0xFF00796B) : Colors.grey.shade300),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 25),
-            const Text('AROUND THE CITY',
+              const SizedBox(height: 24),
+
+              const Text(
+                'Airport to Stay',
                 style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF00796B))),
-            const SizedBox(height: 10),
-            // City Options
-            GestureDetector(
-              onTap: () => setState(() => cityOption = 'Metro Pass'),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: cityOption == 'Metro Pass' ? const Color(0xFF00796B) : Colors.transparent,
-                      width: 2,
-                    ),
-                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))]),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(color: const Color(0xFFE0F2F1), borderRadius: BorderRadius.circular(12)),
-                          child: const Icon(Icons.confirmation_number, color: Color(0xFF00796B)),
-                        ),
-                        const SizedBox(width: 14),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Metro Pass',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                            SizedBox(height: 4),
-                            Text('5 - Day unlimited travel',
-                                style: TextStyle(color: Colors.grey, fontSize: 12)),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text('₹1,500',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF00796B),
-                                fontSize: 16)),
-                        const SizedBox(width: 10),
-                        Icon(Icons.check_circle,
-                            color: cityOption == 'Metro Pass' ? const Color(0xFF00796B) : Colors.grey.shade300),
-                      ],
-                    ),
-                  ],
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF183B4E),
                 ),
               ),
-            ),
-            const SizedBox(height: 12),
-            GestureDetector(
-              onTap: () => setState(() => cityOption = 'Bus'),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: cityOption == 'Bus' ? const Color(0xFF00796B) : Colors.transparent,
-                      width: 2,
-                    ),
-                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))]),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(color: const Color(0xFFE0F2F1), borderRadius: BorderRadius.circular(12)),
-                          child: const Icon(Icons.directions_bus, color: Color(0xFF00796B)),
-                        ),
-                        const SizedBox(width: 14),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Bus',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                            SizedBox(height: 4),
-                            Text('Scenic • Budget option',
-                                style: TextStyle(color: Colors.grey, fontSize: 12)),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text('₹900',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF00796B),
-                                fontSize: 16)),
-                        const SizedBox(width: 10),
-                        Icon(Icons.check_circle,
-                            color: cityOption == 'Bus' ? const Color(0xFF00796B) : Colors.grey.shade300),
-                      ],
-                    ),
-                  ],
+
+              const SizedBox(height: 10),
+
+              ...airportOptions.map(
+                (option) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _transportCard(
+                    name: option['name'],
+                    description: option['description'],
+                    price: option['price'],
+                    icon: option['icon'],
+                    selected: selectedAirport == option['name'],
+                    onTap: () {
+                      setState(() {
+                        selectedAirport = option['name'];
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 35),
-            SizedBox(
-              width: double.infinity,
-              height: 54,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => StaySuggestionsPage5(
-                        destination: widget.destination,
-                        duration: widget.duration,
-                        travellers: widget.travellers,
-                        travellerCount: widget.travellerCount,
-                        userBudget: widget.userBudget,
+
+              const SizedBox(height: 14),
+
+              const Text(
+                'Around the City',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF183B4E),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              ...cityOptions.map(
+                (option) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _transportCard(
+                    name: option['name'],
+                    description: option['description'],
+                    price: option['price'],
+                    icon: option['icon'],
+                    selected: selectedCityTransport == option['name'],
+                    onTap: () {
+                      setState(() {
+                        selectedCityTransport = option['name'];
+                      });
+                    },
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE6F4F1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 20,
+                      color: Color(0xFF155E75),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Public transport is usually a good option for exploring major tourist areas.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF183B4E),
+                        ),
                       ),
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF00796B),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                  elevation: 4,
+                  ],
                 ),
-                child: const Text('Choose Stay Suggestions →',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
               ),
+
+              const SizedBox(height: 22),
+
+              SizedBox(
+                width: double.infinity,
+                height: 49,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StaySuggestionsPage6(
+                          destination: widget.destination,
+                          duration: widget.duration,
+                          travellers: widget.travellers,
+                          travellerCount: widget.travellerCount,
+                          userBudget: widget.userBudget,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF155E75),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Choose Stay',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(width: 7),
+                      Icon(Icons.arrow_forward_rounded, size: 19),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _transportCard({
+    required String name,
+    required String description,
+    required String price,
+    required IconData icon,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(13),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected ? const Color(0xFF155E75) : const Color(0xFFD9E2E7),
+            width: selected ? 1.4 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: selected
+                    ? const Color(0xFFE6F4F1)
+                    : const Color(0xFFF8FAF9),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: const Color(0xFF155E75), size: 21),
+            ),
+            const SizedBox(width: 11),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF183B4E),
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    description,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF64748B),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  price,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF183B4E),
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Icon(
+                  selected ? Icons.check_circle : Icons.radio_button_unchecked,
+                  size: 19,
+                  color: selected
+                      ? const Color(0xFF2A9D8F)
+                      : const Color(0xFFB8C4CA),
+                ),
+              ],
             ),
           ],
         ),
