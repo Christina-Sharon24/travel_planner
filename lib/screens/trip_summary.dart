@@ -4,18 +4,29 @@ class TripSummaryPage extends StatelessWidget {
   final String destination;
   final String duration;
   final double userBudget;
+  final double spent;
+  final Map<String, dynamic>? newExpense;
 
   const TripSummaryPage({
     super.key,
     required this.destination,
     required this.duration,
     required this.userBudget,
+    required this.spent,
+    this.newExpense,
   });
 
   @override
   Widget build(BuildContext context) {
+    final double remaining =
+    userBudget - spent < 0 ? 0 : userBudget - spent;
+
+    final double progress =
+    userBudget > 0 ? spent / userBudget : 0;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7F8),
+
       appBar: AppBar(
         title: const Text(
           'TRIP SUMMARY',
@@ -28,42 +39,60 @@ class TripSummaryPage extends StatelessWidget {
         backgroundColor: const Color(0xFF00796B),
         elevation: 0,
       ),
+
       body: Column(
         children: [
           Container(
             width: double.infinity,
             color: const Color(0xFF00796B),
-            padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+            padding: const EdgeInsets.only(
+              bottom: 20,
+              left: 20,
+              right: 20,
+            ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
               children: [
                 Text(
                   destination,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 12,
+                  ),
                 ),
+
                 Text(
-                  '$duration . 2 travellers',
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                  duration,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),
           ),
+
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
+
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
                 children: [
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius:
+                      BorderRadius.circular(12),
                     ),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'TRIP BUDGET',
                           style: TextStyle(
                             fontSize: 10,
@@ -71,78 +100,153 @@ class TripSummaryPage extends StatelessWidget {
                             color: Colors.grey,
                           ),
                         ),
-                        SizedBox(height: 8),
+
+                        const SizedBox(height: 8),
+
                         _SummaryRow(
                           label: 'Planned',
-                          value: 'Rs 78000',
+                          value:
+                          '₹${userBudget.toStringAsFixed(0)}',
                           isBold: true,
                         ),
+
                         _SummaryRow(
                           label: 'Actual Spent',
-                          value: 'Rs 76450',
+                          value:
+                          '₹${spent.toStringAsFixed(0)}',
                           color: Colors.redAccent,
                         ),
+
                         _SummaryRow(
                           label: 'Remaining',
-                          value: 'Rs 1550',
+                          value:
+                          '₹${remaining.toStringAsFixed(0)}',
                           color: Colors.green,
                         ),
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 20),
+
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius:
+                      BorderRadius.circular(12),
                     ),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'TRIP READINESS',
+                        const Text(
+                          'BUDGET USAGE',
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                             color: Colors.grey,
                           ),
                         ),
-                        SizedBox(height: 8),
+
+                        const SizedBox(height: 8),
+
                         Text(
-                          '100% complete',
-                          style: TextStyle(
+                          '${(progress * 100).clamp(0, 100).toStringAsFixed(0)}% of budget used',
+                          style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Colors.green,
+                            color: Color(0xFF00796B),
                           ),
                         ),
-                        SizedBox(height: 6),
+
+                        const SizedBox(height: 6),
+
                         LinearProgressIndicator(
-                          value: 1.0,
-                          color: Colors.green,
+                          value: progress > 1 ? 1 : progress,
+                          color: const Color(0xFF00796B),
+                          backgroundColor:
+                          Colors.grey.shade200,
                           minHeight: 6,
                         ),
-                        SizedBox(height: 10),
-                        Text('• Documents', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                        Text('• Accommodation', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                        Text('• Transport', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                        Text('• Travel essentials', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ],
                     ),
                   ),
+
+                  const SizedBox(height: 20),
+
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                      BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'LATEST EXPENSE',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        if (newExpense != null) ...[
+                          Text(
+                            newExpense!['description'],
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          const SizedBox(height: 4),
+
+                          Text(
+                            '${newExpense!['category']} • ₹${(newExpense!['amount'] as double).toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ] else
+                          const Text(
+                            'No expense added.',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+
                   const SizedBox(height: 24),
+
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius:
+                      BorderRadius.circular(12),
                     ),
                     child: const Column(
                       children: [
-                        Icon(Icons.check_circle, color: Colors.green, size: 28),
+                        Icon(
+                          Icons.check_circle,
+                          color: Colors.green,
+                          size: 28,
+                        ),
+
                         SizedBox(height: 6),
+
                         Text(
                           'TRIP COMPLETE!',
                           style: TextStyle(
@@ -153,16 +257,22 @@ class TripSummaryPage extends StatelessWidget {
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 20),
+
                   SizedBox(
                     width: double.infinity,
                     height: 48,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.popUntil(context, (route) => route.isFirst);
+                        Navigator.popUntil(
+                          context,
+                              (route) => route.isFirst,
+                        );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00838F),
+                        backgroundColor:
+                        const Color(0xFF00838F),
                       ),
                       child: const Text(
                         'BACK TO HOME',
@@ -172,11 +282,11 @@ class TripSummaryPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -199,16 +309,23 @@ class _SummaryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment:
+        MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontSize: 12)),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12),
+          ),
+
           Text(
             value,
             style: TextStyle(
               fontSize: 12,
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              fontWeight: isBold
+                  ? FontWeight.bold
+                  : FontWeight.normal,
               color: color ?? Colors.black,
             ),
           ),
