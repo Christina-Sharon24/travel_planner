@@ -5,18 +5,32 @@ class TripWalletPage extends StatelessWidget {
   final String destination;
   final String duration;
   final double userBudget;
+  final Map<String, dynamic>? newExpense;
 
   const TripWalletPage({
     super.key,
     required this.destination,
     required this.duration,
     required this.userBudget,
+    this.newExpense,
   });
 
   @override
   Widget build(BuildContext context) {
+    final double expenseAmount =
+        newExpense?['amount'] ?? 0.0;
+
+    final double spent = expenseAmount;
+
+    final double remaining =
+    userBudget - spent < 0 ? 0 : userBudget - spent;
+
+    final double progress =
+    userBudget > 0 ? spent / userBudget : 0;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7F8),
+
       appBar: AppBar(
         title: const Text(
           'Trip Wallet',
@@ -30,41 +44,54 @@ class TripWalletPage extends StatelessWidget {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '$destination . $duration',
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
+              '$destination • $duration',
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 12,
+              ),
             ),
+
             const SizedBox(height: 12),
+
             Row(
               children: [
                 _buildBudgetBox(
                   'PLANNED',
-                  '₹78000',
+                  '₹${userBudget.toStringAsFixed(0)}',
                   const Color(0xFFE8EAF6),
                   Colors.indigo,
                 ),
+
                 const SizedBox(width: 8),
+
                 _buildBudgetBox(
                   'SPENT',
-                  '₹31500',
+                  '₹${spent.toStringAsFixed(0)}',
                   const Color(0xFFFFEBEE),
                   Colors.red,
                 ),
+
                 const SizedBox(width: 8),
+
                 _buildBudgetBox(
                   'REMAINING',
-                  '₹46500',
+                  '₹${remaining.toStringAsFixed(0)}',
                   const Color(0xFFE8F5E9),
                   Colors.green,
                 ),
               ],
             ),
+
             const SizedBox(height: 20),
+
             const Text(
               'SPENDING',
               style: TextStyle(
@@ -73,54 +100,54 @@ class TripWalletPage extends StatelessWidget {
                 color: Colors.grey,
               ),
             ),
+
             const SizedBox(height: 10),
+
             _buildSpendingProgress(
-              'Food',
-              'Rs 4200/10000',
-              0.42,
-              Colors.orange,
-            ),
-            _buildSpendingProgress(
-              'Transport',
-              'Rs 2100/6000',
-              0.35,
-              Colors.blue,
-            ),
-            _buildSpendingProgress(
-              'Shopping',
-              'Rs 3200/5000',
-              0.64,
-              Colors.purple,
-            ),
-            _buildSpendingProgress(
-              'Accommodation',
-              'Rs 22000/30000',
-              0.73,
+              'Total Spending',
+              '₹${spent.toStringAsFixed(0)} / ₹${userBudget.toStringAsFixed(0)}',
+              progress > 1 ? 1 : progress,
               Colors.teal,
             ),
+
             const SizedBox(height: 20),
+
             const Text(
-              'RECENT EXPENSES',
+              'RECENT EXPENSE',
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
                 color: Colors.grey,
               ),
             ),
+
             const SizedBox(height: 10),
-            _buildExpenseTile(
-              'Lunch',
-              'Today, 1:30 PM',
-              'Rs 450',
-              Icons.restaurant,
-            ),
-            _buildExpenseTile(
-              'Metro',
-              'Today, 11:30 AM',
-              'Rs 120',
-              Icons.train,
-            ),
+
+            if (newExpense != null)
+              _buildExpenseTile(
+                newExpense!['description'],
+                newExpense!['category'],
+                '₹${expenseAmount.toStringAsFixed(0)}',
+              )
+            else
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Text(
+                  'No expenses added yet.',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+
             const SizedBox(height: 24),
+
             SizedBox(
               width: double.infinity,
               height: 48,
@@ -133,6 +160,8 @@ class TripWalletPage extends StatelessWidget {
                         destination: destination,
                         duration: duration,
                         userBudget: userBudget,
+                        spent: spent,
+                        newExpense: newExpense,
                       ),
                     ),
                   );
@@ -157,15 +186,15 @@ class TripWalletPage extends StatelessWidget {
 
   Widget _buildBudgetBox(
       String label,
-      String val,
-      Color bg,
-      Color textCol,
+      String value,
+      Color backgroundColor,
+      Color textColor,
       ) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: bg,
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -176,16 +205,18 @@ class TripWalletPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 9,
                 fontWeight: FontWeight.bold,
-                color: textCol,
+                color: textColor,
               ),
             ),
+
             const SizedBox(height: 4),
+
             Text(
-              val,
+              value,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: textCol,
+                color: textColor,
               ),
             ),
           ],
@@ -200,78 +231,93 @@ class TripWalletPage extends StatelessWidget {
       double progress,
       Color color,
       ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment:
+          MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
               ),
-              Text(
-                subtitle,
-                style: const TextStyle(fontSize: 10, color: Colors.grey),
+            ),
+
+            Text(
+              subtitle,
+              style: const TextStyle(
+                fontSize: 10,
+                color: Colors.grey,
               ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          LinearProgressIndicator(
-            value: progress,
-            backgroundColor: Colors.grey.shade200,
-            color: color,
-            minHeight: 6,
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 4),
+
+        LinearProgressIndicator(
+          value: progress,
+          backgroundColor: Colors.grey.shade200,
+          color: color,
+          minHeight: 6,
+        ),
+      ],
     );
   }
 
   Widget _buildExpenseTile(
-      String title,
-      String time,
-      String price,
-      IconData icon,
+      String description,
+      String category,
+      String amount,
       ) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment:
+        MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
-              Icon(icon, size: 20, color: const Color(0xFF00796B)),
+              const Icon(
+                Icons.receipt_long,
+                size: 20,
+                color: Color(0xFF00796B),
+              ),
+
               const SizedBox(width: 10),
+
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    description,
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+
                   Text(
-                    time,
-                    style: const TextStyle(fontSize: 10, color: Colors.grey),
+                    category,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey,
+                    ),
                   ),
                 ],
               ),
             ],
           ),
+
           Text(
-            price,
+            amount,
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
