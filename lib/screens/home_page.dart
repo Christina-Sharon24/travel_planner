@@ -318,12 +318,14 @@ class HomePage1 extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const TripResultPage7(
+                                    builder: (_) => TripResultPage(
                                       destination: 'Paris, France',
                                       duration: '5 days',
                                       travellers: '2 travellers',
                                       userBudget: 50000,
                                       travellerCount: 2,
+                                      startDate: DateTime(2026, 10, 12),
+                                      endDate: DateTime(2026, 10, 16),
                                     ),
                                   ),
                                 );

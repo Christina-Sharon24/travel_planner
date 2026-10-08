@@ -1,455 +1,325 @@
 import 'package:flutter/material.dart';
 
-import 'getting_around.dart';
-
-class FoodRecommendationsPage extends StatelessWidget {
+class FoodRecommendations extends StatefulWidget {
   final String destination;
   final String duration;
   final String travellers;
   final int travellerCount;
   final double userBudget;
+  final Set<int> initialSelectedFoods;
 
-  final String diet;
-  final String foodType;
-  final String foodBudget;
-  final String foodPreference;
-
-  const FoodRecommendationsPage({
+  const FoodRecommendations({
     super.key,
     required this.destination,
     required this.duration,
     required this.travellers,
     required this.travellerCount,
     required this.userBudget,
-    required this.diet,
-    required this.foodType,
-    required this.foodBudget,
-    required this.foodPreference,
+    required this.initialSelectedFoods,
   });
 
-  List<Map<String, dynamic>> getFoodList() {
-    if (destination == 'Paris, France') {
-      return [
-        {
-          'name': 'Crêpe',
-          'description': 'Popular French street food',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.6',
-          'price': '₹400',
-          'icon': Icons.bakery_dining_outlined,
-        },
-        {
-          'name': 'Baguette Sandwich',
-          'description': 'Fresh French bread with simple fillings',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.4',
-          'price': '₹350',
-          'icon': Icons.lunch_dining_outlined,
-        },
-        {
-          'name': 'Ratatouille',
-          'description': 'Traditional vegetable dish',
-          'category': 'Restaurant',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.7',
-          'price': '₹900',
-          'icon': Icons.restaurant_outlined,
-        },
-        {
-          'name': 'Croissant',
-          'description': 'Classic French pastry',
-          'category': 'Cafe',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.8',
-          'price': '₹300',
-          'icon': Icons.bakery_dining_outlined,
-        },
-        {
-          'name': 'Chicken Baguette',
-          'description': 'French bread with chicken filling',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Non-Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.5',
-          'price': '₹450',
-          'icon': Icons.lunch_dining_outlined,
-        },
-      ];
-    }
+  @override
+  State<FoodRecommendations> createState() => _FoodRecommendationsState();
+}
 
-    if (destination == 'Dubai, UAE') {
-      return [
-        {
-          'name': 'Shawarma',
-          'description': 'Popular Middle Eastern street food',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Non-Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.7',
-          'price': '₹300',
-          'icon': Icons.lunch_dining_outlined,
-        },
-        {
-          'name': 'Falafel',
-          'description': 'Crispy chickpea-based local favourite',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.6',
-          'price': '₹250',
-          'icon': Icons.restaurant_outlined,
-        },
-        {
-          'name': 'Hummus Platter',
-          'description': 'Creamy hummus with bread and vegetables',
-          'category': 'Restaurant',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.7',
-          'price': '₹650',
-          'icon': Icons.restaurant_outlined,
-        },
-        {
-          'name': 'Chicken Mandi',
-          'description': 'Fragrant rice with tender chicken',
-          'category': 'Restaurant',
-          'type': 'Local Food',
-          'diet': 'Non-Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.8',
-          'price': '₹850',
-          'icon': Icons.rice_bowl_outlined,
-        },
-        {
-          'name': 'Arabic Coffee',
-          'description': 'Traditional coffee served with dates',
-          'category': 'Cafe',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.5',
-          'price': '₹250',
-          'icon': Icons.local_cafe_outlined,
-        },
-      ];
-    }
+class _FoodRecommendationsState extends State<FoodRecommendations> {
+  String selectedCategory = 'Local';
 
-    if (destination == 'Singapore') {
-      return [
-        {
-          'name': 'Vegetarian Noodles',
-          'description': 'Local-style noodles with vegetables',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.5',
-          'price': '₹400',
-          'icon': Icons.ramen_dining_outlined,
-        },
-        {
-          'name': 'Chicken Rice',
-          'description': 'One of Singapore’s popular local dishes',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Non-Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.7',
-          'price': '₹450',
-          'icon': Icons.rice_bowl_outlined,
-        },
-        {
-          'name': 'Laksa',
-          'description': 'Spicy noodle soup with rich flavours',
-          'category': 'Restaurant',
-          'type': 'Local Food',
-          'diet': 'Non-Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.8',
-          'price': '₹700',
-          'icon': Icons.ramen_dining_outlined,
-        },
-        {
-          'name': 'Kaya Toast',
-          'description': 'Toast with coconut jam and coffee',
-          'category': 'Cafe',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.5',
-          'price': '₹300',
-          'icon': Icons.bakery_dining_outlined,
-        },
-      ];
-    }
-
-    if (destination == 'London, UK') {
-      return [
-        {
-          'name': 'Vegetable Pie',
-          'description': 'Warm British-style vegetable pie',
-          'category': 'Restaurant',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.4',
-          'price': '₹750',
-          'icon': Icons.restaurant_outlined,
-        },
-        {
-          'name': 'Fish and Chips',
-          'description': 'Classic British meal',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Non-Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.6',
-          'price': '₹900',
-          'icon': Icons.lunch_dining_outlined,
-        },
-        {
-          'name': 'English Breakfast',
-          'description': 'Traditional breakfast served hot',
-          'category': 'Restaurant',
-          'type': 'Local Food',
-          'diet': 'Non-Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.5',
-          'price': '₹850',
-          'icon': Icons.breakfast_dining_outlined,
-        },
-        {
-          'name': 'Scone',
-          'description': 'Classic British cafe snack',
-          'category': 'Cafe',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.4',
-          'price': '₹350',
-          'icon': Icons.bakery_dining_outlined,
-        },
-      ];
-    }
-
-    if (destination == 'Tokyo, Japan') {
-      return [
-        {
-          'name': 'Vegetable Sushi',
-          'description': 'Fresh sushi rolls with vegetables',
-          'category': 'Restaurant',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.6',
-          'price': '₹700',
-          'icon': Icons.rice_bowl_outlined,
-        },
-        {
-          'name': 'Ramen',
-          'description': 'Popular Japanese noodle soup',
-          'category': 'Restaurant',
-          'type': 'Local Food',
-          'diet': 'Non-Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.8',
-          'price': '₹650',
-          'icon': Icons.ramen_dining_outlined,
-        },
-        {
-          'name': 'Onigiri',
-          'description': 'Convenient Japanese rice snack',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.5',
-          'price': '₹250',
-          'icon': Icons.rice_bowl_outlined,
-        },
-        {
-          'name': 'Matcha Dessert',
-          'description': 'Popular Japanese green tea dessert',
-          'category': 'Cafe',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.6',
-          'price': '₹500',
-          'icon': Icons.cake_outlined,
-        },
-      ];
-    }
-
-    if (destination == 'Bangkok, Thailand') {
-      return [
-        {
-          'name': 'Pad Thai',
-          'description': 'Popular Thai stir-fried noodles',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.7',
-          'price': '₹350',
-          'icon': Icons.ramen_dining_outlined,
-        },
-        {
-          'name': 'Mango Sticky Rice',
-          'description': 'Classic Thai sweet dish',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.6',
-          'price': '₹300',
-          'icon': Icons.cake_outlined,
-        },
-        {
-          'name': 'Tom Yum',
-          'description': 'Spicy and sour Thai soup',
-          'category': 'Restaurant',
-          'type': 'Local Food',
-          'diet': 'Non-Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.7',
-          'price': '₹550',
-          'icon': Icons.soup_kitchen_outlined,
-        },
-        {
-          'name': 'Thai Iced Tea',
-          'description': 'Sweet and creamy Thai tea',
-          'category': 'Cafe',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.5',
-          'price': '₹220',
-          'icon': Icons.local_cafe_outlined,
-        },
-      ];
-    }
-
-    if (destination == 'Rome, Italy') {
-      return [
-        {
-          'name': 'Margherita Pizza',
-          'description': 'Classic Italian pizza',
-          'category': 'Restaurant',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.8',
-          'price': '₹600',
-          'icon': Icons.local_pizza_outlined,
-        },
-        {
-          'name': 'Pasta',
-          'description': 'Traditional Italian pasta',
-          'category': 'Restaurant',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.7',
-          'price': '₹750',
-          'icon': Icons.ramen_dining_outlined,
-        },
-        {
-          'name': 'Supplì',
-          'description': 'Roman fried rice snack',
-          'category': 'Street Food',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Budget',
-          'rating': '4.5',
-          'price': '₹300',
-          'icon': Icons.lunch_dining_outlined,
-        },
-        {
-          'name': 'Tiramisu',
-          'description': 'Classic Italian coffee dessert',
-          'category': 'Cafe',
-          'type': 'Local Food',
-          'diet': 'Vegetarian',
-          'budget': 'Moderate',
-          'rating': '4.8',
-          'price': '₹500',
-          'icon': Icons.cake_outlined,
-        },
-      ];
-    }
-
-    return [
-      {
-        'name': 'Local Vegetarian Meal',
-        'description': 'A popular local vegetarian option',
-        'category': 'Restaurant',
-        'type': 'Local Food',
-        'diet': 'Vegetarian',
-        'budget': 'Budget',
-        'rating': '4.5',
-        'price': '₹500',
-        'icon': Icons.restaurant_outlined,
-      },
-      {
-        'name': 'Local Street Food',
-        'description': 'Popular food option for travellers',
-        'category': 'Street Food',
-        'type': 'Local Food',
-        'diet': 'Vegetarian',
-        'budget': 'Budget',
-        'rating': '4.4',
-        'price': '₹300',
-        'icon': Icons.lunch_dining_outlined,
-      },
-    ];
+  late Set<int> selectedFoods;
+  @override
+  void initState() {
+    super.initState();
+    selectedFoods = {...widget.initialSelectedFoods};
   }
 
-  List<Map<String, dynamic>> getRecommendations() {
-    List<Map<String, dynamic>> foods = getFoodList();
+  final List<String> categories = [
+    'Local',
+    'Vegetarian',
+    'Café',
+    'Street Food',
+    'Restaurant',
+    'Quick & Casual',
+  ];
 
-    List<Map<String, dynamic>> filtered = foods.where((food) {
-      bool dietMatch = food['diet'] == diet;
+  List<Map<String, dynamic>> getFoodOptions() {
+    switch (widget.destination) {
+      case 'Paris, France':
+        return [
+          {
+            'name': 'Croissant & Coffee',
+            'place': 'Café de Flore',
+            'location': 'Saint-Germain, Paris',
+            'price': 900,
+            'category': 'Café',
+            'rating': '4.4',
+            'icon': Icons.coffee_outlined,
+          },
+          {
+            'name': 'Ratatouille',
+            'place': 'Le Potager du Marais',
+            'location': 'Le Marais, Paris',
+            'price': 1200,
+            'category': 'Local',
+            'rating': '4.5',
+            'icon': Icons.restaurant_outlined,
+          },
+          {
+            'name': 'French Onion Soup',
+            'place': 'Bouillon Chartier',
+            'location': 'Grands Boulevards, Paris',
+            'price': 800,
+            'category': 'Local',
+            'rating': '4.3',
+            'icon': Icons.soup_kitchen_outlined,
+          },
+          {
+            'name': 'Vegetable Quiche',
+            'place': 'Le Pain Quotidien',
+            'location': 'Central Paris',
+            'price': 700,
+            'category': 'Vegetarian',
+            'rating': '4.2',
+            'icon': Icons.eco_outlined,
+          },
+          {
+            'name': 'French Crepe',
+            'place': 'Crêperie Saint-Eustache',
+            'location': 'Les Halles, Paris',
+            'price': 650,
+            'category': 'Street Food',
+            'rating': '4.4',
+            'icon': Icons.fastfood_outlined,
+          },
+          {
+            'name': 'Baguette Sandwich',
+            'place': 'Paul Bakery',
+            'location': 'Central Paris',
+            'price': 600,
+            'category': 'Quick & Casual',
+            'rating': '4.1',
+            'icon': Icons.lunch_dining_outlined,
+          },
+        ];
 
-      bool typeMatch = food['type'] == foodType || foodType == 'Mix of Both';
+      case 'Dubai, UAE':
+        return [
+          {
+            'name': 'Chicken Shawarma',
+            'place': 'Local Shawarma Café',
+            'location': 'Deira, Dubai',
+            'price': 500,
+            'category': 'Street Food',
+            'rating': '4.5',
+            'icon': Icons.fastfood_outlined,
+          },
+          {
+            'name': 'Arabic Mezze',
+            'place': 'Al Fanar Restaurant',
+            'location': 'Dubai Festival City',
+            'price': 1400,
+            'category': 'Local',
+            'rating': '4.4',
+            'icon': Icons.restaurant_outlined,
+          },
+          {
+            'name': 'Vegetable Hummus Bowl',
+            'place': 'Arabian Café',
+            'location': 'Downtown Dubai',
+            'price': 900,
+            'category': 'Vegetarian',
+            'rating': '4.3',
+            'icon': Icons.eco_outlined,
+          },
+          {
+            'name': 'Arabic Coffee & Dates',
+            'place': 'Local Café',
+            'location': 'Al Seef, Dubai',
+            'price': 550,
+            'category': 'Café',
+            'rating': '4.4',
+            'icon': Icons.coffee_outlined,
+          },
+        ];
 
-      bool budgetMatch = food['budget'] == foodBudget;
+      case 'Singapore':
+        return [
+          {
+            'name': 'Chicken Rice',
+            'place': 'Maxwell Food Centre',
+            'location': 'Chinatown, Singapore',
+            'price': 550,
+            'category': 'Local',
+            'rating': '4.5',
+            'icon': Icons.rice_bowl_outlined,
+          },
+          {
+            'name': 'Vegetable Noodles',
+            'place': 'Lau Pa Sat',
+            'location': 'Downtown Singapore',
+            'price': 650,
+            'category': 'Vegetarian',
+            'rating': '4.2',
+            'icon': Icons.eco_outlined,
+          },
+          {
+            'name': 'Kaya Toast & Coffee',
+            'place': 'Ya Kun Kaya Toast',
+            'location': 'Central Singapore',
+            'price': 450,
+            'category': 'Café',
+            'rating': '4.4',
+            'icon': Icons.coffee_outlined,
+          },
+          {
+            'name': 'Satay',
+            'place': 'Lau Pa Sat',
+            'location': 'Downtown Singapore',
+            'price': 700,
+            'category': 'Street Food',
+            'rating': '4.5',
+            'icon': Icons.fastfood_outlined,
+          },
+        ];
 
-      bool preferenceMatch = food['category'] == foodPreference;
+      case 'London, UK':
+        return [
+          {
+            'name': 'Fish & Chips',
+            'place': 'Golden Union',
+            'location': 'Soho, London',
+            'price': 1100,
+            'category': 'Local',
+            'rating': '4.4',
+            'icon': Icons.restaurant_outlined,
+          },
+          {
+            'name': 'Vegetable Pie',
+            'place': 'The Ivy',
+            'location': 'Covent Garden, London',
+            'price': 1300,
+            'category': 'Vegetarian',
+            'rating': '4.3',
+            'icon': Icons.eco_outlined,
+          },
+          {
+            'name': 'English Breakfast',
+            'place': 'The Breakfast Club',
+            'location': 'Soho, London',
+            'price': 950,
+            'category': 'Café',
+            'rating': '4.5',
+            'icon': Icons.coffee_outlined,
+          },
+          {
+            'name': 'Chicken Wrap',
+            'place': 'Pret A Manger',
+            'location': 'Central London',
+            'price': 700,
+            'category': 'Quick & Casual',
+            'rating': '4.2',
+            'icon': Icons.lunch_dining_outlined,
+          },
+        ];
 
-      return dietMatch && typeMatch && budgetMatch && preferenceMatch;
-    }).toList();
+      case 'Tokyo, Japan':
+        return [
+          {
+            'name': 'Ramen',
+            'place': 'Local Ramen House',
+            'location': 'Shinjuku, Tokyo',
+            'price': 900,
+            'category': 'Local',
+            'rating': '4.6',
+            'icon': Icons.ramen_dining_outlined,
+          },
+          {
+            'name': 'Vegetable Sushi',
+            'place': 'Sushi Restaurant',
+            'location': 'Shibuya, Tokyo',
+            'price': 1200,
+            'category': 'Vegetarian',
+            'rating': '4.4',
+            'icon': Icons.set_meal_outlined,
+          },
+          {
+            'name': 'Matcha Dessert',
+            'place': 'Matcha Café',
+            'location': 'Asakusa, Tokyo',
+            'price': 650,
+            'category': 'Café',
+            'rating': '4.5',
+            'icon': Icons.coffee_outlined,
+          },
+          {
+            'name': 'Takoyaki',
+            'place': 'Street Food Stall',
+            'location': 'Shibuya, Tokyo',
+            'price': 500,
+            'category': 'Street Food',
+            'rating': '4.4',
+            'icon': Icons.fastfood_outlined,
+          },
+        ];
 
-    if (filtered.isEmpty) {
-      filtered = foods.where((food) {
-        return food['diet'] == diet;
-      }).toList();
+      default:
+        return [
+          {
+            'name': 'Local Special',
+            'place': 'Recommended Local Restaurant',
+            'location': 'City Centre',
+            'price': 900,
+            'category': 'Local',
+            'rating': '4.3',
+            'icon': Icons.restaurant_outlined,
+          },
+          {
+            'name': 'Vegetarian Bowl',
+            'place': 'Green Café',
+            'location': 'City Centre',
+            'price': 750,
+            'category': 'Vegetarian',
+            'rating': '4.2',
+            'icon': Icons.eco_outlined,
+          },
+          {
+            'name': 'Coffee & Snack',
+            'place': 'Local Café',
+            'location': 'City Centre',
+            'price': 500,
+            'category': 'Café',
+            'rating': '4.4',
+            'icon': Icons.coffee_outlined,
+          },
+        ];
+    }
+  }
+
+  double get selectedTotal {
+    final foods = getFoodOptions();
+
+    double total = 0;
+
+    for (final index in selectedFoods) {
+      total += (foods[index]['price'] as int).toDouble();
     }
 
-    if (filtered.isEmpty) {
-      filtered = foods;
-    }
+    return total * widget.travellerCount;
+  }
 
-    return filtered;
+  double get estimatedFoodBudget {
+    final days =
+        int.tryParse(widget.duration.replaceAll(RegExp(r'[^0-9]'), '')) ?? 1;
+
+    return days * widget.travellerCount * 1200;
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> recommendations = getRecommendations();
+    final allFoods = getFoodOptions();
+
+    final filteredFoods = allFoods.where((food) {
+      return food['category'] == selectedCategory;
+    }).toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAF9),
@@ -458,7 +328,7 @@ class FoodRecommendationsPage extends StatelessWidget {
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          'Food Recommendations',
+          'Food',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
       ),
@@ -468,80 +338,302 @@ class FoodRecommendationsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Food to try in $destination',
-                style: const TextStyle(
+              const Text(
+                'Explore food your way',
+                style: TextStyle(
                   fontSize: 21,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF183B4E),
                 ),
               ),
 
-              const SizedBox(height: 6),
+              const SizedBox(height: 7),
 
-              const Text(
-                'Recommendations based on your preferences.',
-                style: TextStyle(
+              Text(
+                'Discover food options in ${widget.destination}. '
+                'You can decide what to eat during your trip.',
+                style: const TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w400,
                   color: Color(0xFF64748B),
+                  height: 1.4,
                 ),
               ),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: 20),
 
+              // Estimated food budget
               Container(
-                padding: const EdgeInsets.all(12),
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: const Color(0xFFE6F4F1),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(11),
+                      ),
+                      child: const Icon(
+                        Icons.account_balance_wallet_outlined,
+                        color: Color(0xFF155E75),
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Estimated food budget',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF64748B),
+                            ),
+                          ),
+
+                          const SizedBox(height: 3),
+
+                          Text(
+                            '₹${estimatedFoodBudget.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF183B4E),
+                            ),
+                          ),
+
+                          const SizedBox(height: 2),
+
+                          const Text(
+                            'Approximate amount for the whole trip',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Color(0xFF64748B),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              const Text(
+                'What are you looking for?',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF183B4E),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              SizedBox(
+                height: 42,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categories.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 7),
+                  itemBuilder: (context, index) {
+                    final category = categories[index];
+                    final selected = category == selectedCategory;
+
+                    return ChoiceChip(
+                      label: Text(
+                        category,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: selected
+                              ? Colors.white
+                              : const Color(0xFF183B4E),
+                          fontWeight: selected
+                              ? FontWeight.w500
+                              : FontWeight.w400,
+                        ),
+                      ),
+                      selected: selected,
+                      selectedColor: const Color(0xFF155E75),
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(color: Color(0xFFD9E2E7)),
+                      onSelected: (_) {
+                        setState(() {
+                          selectedCategory = category;
+                        });
+                      },
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'Food options',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF183B4E),
+                      ),
+                    ),
+                  ),
+
+                  Text(
+                    '${filteredFoods.length} options',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF64748B),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 11),
+
+              ...filteredFoods.map((food) {
+                final originalIndex = allFoods.indexOf(food);
+                final selected = selectedFoods.contains(originalIndex);
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 11),
+                  child: _foodCard(
+                    food: food,
+                    selected: selected,
+                    onTap: () {
+                      setState(() {
+                        if (selected) {
+                          selectedFoods.remove(originalIndex);
+                        } else {
+                          selectedFoods.add(originalIndex);
+                        }
+                      });
+                    },
+                  ),
+                );
+              }),
+
+              const SizedBox(height: 8),
+
+              // Selected food summary
+              if (selectedFoods.isNotEmpty)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(13),
+                    border: Border.all(color: const Color(0xFFD9E2E7)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Your selected food',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF183B4E),
+                        ),
+                      ),
+
+                      const SizedBox(height: 7),
+
+                      Text(
+                        '${selectedFoods.length} option${selectedFoods.length == 1 ? '' : 's'} selected',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+
+                      const SizedBox(height: 9),
+
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Text(
+                              'Estimated cost for your group',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Color(0xFF64748B),
+                              ),
+                            ),
+                          ),
+
+                          Text(
+                            '₹${selectedTotal.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF155E75),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+              const SizedBox(height: 20),
+
+              // Information box
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF0F5F6),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Wrap(
-                  spacing: 7,
-                  runSpacing: 7,
+                child: const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _tag(diet),
-                    _tag(foodType),
-                    _tag(foodBudget),
-                    _tag(foodPreference),
+                    Icon(
+                      Icons.info_outline,
+                      size: 19,
+                      color: Color(0xFF155E75),
+                    ),
+
+                    SizedBox(width: 9),
+
+                    Expanded(
+                      child: Text(
+                        'You do not have to plan every meal now. '
+                        'Save food options you like and decide what to eat '
+                        'when you are actually travelling.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF64748B),
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              if (recommendations.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.only(top: 30),
-                  child: Center(
-                    child: Text(
-                      'No matching food found.',
-                      style: TextStyle(fontSize: 15, color: Color(0xFF64748B)),
-                    ),
-                  ),
-                ),
-
-              ...recommendations.map((food) => _foodCard(food)),
-
-              const SizedBox(height: 10),
-
               SizedBox(
                 width: double.infinity,
                 height: 49,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => GettingAroundPage(
-                          destination: destination,
-                          duration: duration,
-                          travellers: travellers,
-                          travellerCount: travellerCount,
-                          userBudget: userBudget,
-                        ),
-                      ),
-                    );
+                    Navigator.pop(context, {
+                      'selectedFoods': selectedFoods,
+                      'total':selectedTotal
+                    });
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF155E75),
@@ -551,22 +643,14 @@ class FoodRecommendationsPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Continue to Transport',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(width: 7),
-                      Icon(Icons.arrow_forward_rounded, size: 19),
-                    ],
+                  child: const Text(
+                    'Done',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
+
+              const SizedBox(height: 10),
             ],
           ),
         ),
@@ -574,116 +658,137 @@ class FoodRecommendationsPage extends StatelessWidget {
     );
   }
 
-  Widget _tag(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
-          color: Color(0xFF183B4E),
-        ),
-      ),
-    );
-  }
-
-  Widget _foodCard(Map<String, dynamic> food) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE1E8EC)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF1E7),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(food['icon'], color: const Color(0xFFE76F51), size: 25),
+  Widget _foodCard({
+    required Map<String, dynamic> food,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(13),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(13),
+          border: Border.all(
+            color: selected ? const Color(0xFF155E75) : const Color(0xFFD9E2E7),
+            width: selected ? 1.5 : 1,
           ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE6F4F1),
+                borderRadius: BorderRadius.circular(11),
+              ),
+              child: Icon(
+                food['icon'] as IconData,
+                color: const Color(0xFF155E75),
+                size: 23,
+              ),
+            ),
 
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
 
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  food['name'],
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF183B4E),
-                  ),
-                ),
-
-                const SizedBox(height: 4),
-
-                Text(
-                  food['description'],
-                  style: const TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xFF64748B),
-                  ),
-                ),
-
-                const SizedBox(height: 7),
-
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.star_rounded,
-                      size: 16,
-                      color: Color(0xFFE9A23B),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    food['name'] as String,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF183B4E),
                     ),
-                    const SizedBox(width: 3),
-                    Text(
-                      food['rating'],
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF183B4E),
-                      ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  Text(
+                    food['place'] as String,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF64748B),
                     ),
-                    const SizedBox(width: 10),
-                    Text(
-                      food['category'],
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
+                  ),
+
+                  const SizedBox(height: 3),
+
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on_outlined,
+                        size: 13,
                         color: Color(0xFF64748B),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
 
-          const SizedBox(width: 8),
+                      const SizedBox(width: 3),
 
-          Text(
-            food['price'],
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF155E75),
+                      Expanded(
+                        child: Text(
+                          food['location'] as String,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Color(0xFF64748B),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 7),
+
+                  Row(
+                    children: [
+                      Text(
+                        '₹${food['price']}',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF155E75),
+                        ),
+                      ),
+
+                      const SizedBox(width: 10),
+
+                      const Icon(
+                        Icons.star,
+                        size: 13,
+                        color: Color(0xFFE39B24),
+                      ),
+
+                      const SizedBox(width: 3),
+
+                      Text(
+                        food['rating'] as String,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+
+            const SizedBox(width: 7),
+
+            Icon(
+              selected ? Icons.check_circle : Icons.add_circle_outline,
+              color: selected
+                  ? const Color(0xFF155E75)
+                  : const Color(0xFF94A3B8),
+              size: 22,
+            ),
+          ],
+        ),
       ),
     );
   }

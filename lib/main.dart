@@ -1,6 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_planner/screens/home_page.dart';
-void main() {
+import 'package:travel_planner/screens/login_page.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const SafeTrailApp());
 }
 
@@ -17,7 +24,7 @@ class SafeTrailApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFF5F7F7),
         fontFamily: 'sans-serif',
       ),
-      home: const HomePage1(),
+      home: const LoginPage(),
     );
   }
 }

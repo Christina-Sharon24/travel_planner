@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/screens/food.dart';
+import 'package:travel_planner/screens/trip_result.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TripPlanPage extends StatefulWidget {
   const TripPlanPage({super.key});
@@ -9,11 +11,13 @@ class TripPlanPage extends StatefulWidget {
 }
 
 class _TripPlanPageState extends State<TripPlanPage> {
-  int days = 5;
   int travellers = 2;
 
   String selectedTravelType = 'Couple';
   String selectedDestination = 'Paris, France';
+
+  DateTime? startDate;
+  DateTime? endDate;
 
   final TextEditingController budgetController = TextEditingController(
     text: '50000',
@@ -34,6 +38,82 @@ class _TripPlanPageState extends State<TripPlanPage> {
   void dispose() {
     budgetController.dispose();
     super.dispose();
+  }
+
+  Future<void> _selectStartDate() async {
+    final DateTime today = DateTime.now();
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: startDate ?? today,
+      firstDate: today,
+      lastDate: DateTime(today.year + 2),
+    );
+
+    if (picked != null) {
+      setState(() {
+        startDate = picked;
+
+        // If the previously selected end date is before the new start date,
+        // clear it.
+        if (endDate != null && endDate!.isBefore(picked)) {
+          endDate = null;
+        }
+      });
+    }
+  }
+
+  Future<void> _selectEndDate() async {
+    if (startDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select your start date first.')),
+      );
+      return;
+    }
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: endDate ?? startDate!.add(const Duration(days: 1)),
+      firstDate: startDate!,
+      lastDate: DateTime(startDate!.year + 2),
+    );
+
+    if (picked != null) {
+      setState(() {
+        endDate = picked;
+      });
+    }
+  }
+
+  int get tripDays {
+    if (startDate == null || endDate == null) {
+      return 0;
+    }
+
+    return endDate!.difference(startDate!).inDays + 1;
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) {
+      return 'Select date';
+    }
+
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 
   @override
@@ -68,15 +148,12 @@ class _TripPlanPageState extends State<TripPlanPage> {
 
               const Text(
                 'Choose your destination and trip details.',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF64748B),
-                ),
+                style: TextStyle(fontSize: 14, color: Color(0xFF64748B)),
               ),
 
               const SizedBox(height: 22),
 
+              // DESTINATION
               const Text(
                 'Destination',
                 style: TextStyle(
@@ -106,7 +183,6 @@ class _TripPlanPageState extends State<TripPlanPage> {
                     ),
                     style: const TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w400,
                       color: Color(0xFF183B4E),
                     ),
                     items: destinations.map((destination) {
@@ -128,6 +204,64 @@ class _TripPlanPageState extends State<TripPlanPage> {
 
               const SizedBox(height: 23),
 
+              // TRAVEL DATES
+              const Text(
+                'When are you travelling?',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF183B4E),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: _dateCard(
+                      title: 'Start date',
+                      date: startDate,
+                      onTap: _selectStartDate,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _dateCard(
+                      title: 'End date',
+                      date: endDate,
+                      onTap: _selectEndDate,
+                    ),
+                  ),
+                ],
+              ),
+
+              if (tripDays > 0) ...[
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 13,
+                    vertical: 11,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE6F3F4),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '$tripDays ${tripDays == 1 ? 'day' : 'days'} trip',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF155E75),
+                    ),
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: 23),
+
+              // TRAVELLER TYPE
               const Text(
                 'Who are you travelling with?',
                 style: TextStyle(
@@ -151,7 +285,7 @@ class _TripPlanPageState extends State<TripPlanPage> {
                       'Group',
                       'Senior',
                     ].map((type) {
-                      bool selected = selectedTravelType == type;
+                      final bool selected = selectedTravelType == type;
 
                       return ChoiceChip(
                         label: Text(
@@ -183,33 +317,14 @@ class _TripPlanPageState extends State<TripPlanPage> {
 
               const SizedBox(height: 23),
 
+              // TRAVELLERS
               const Text(
-                'Trip Duration',
+                'Number of travellers',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF183B4E),
                 ),
-              ),
-
-              const SizedBox(height: 10),
-
-              _counterCard(
-                icon: Icons.calendar_month_outlined,
-                title: 'Number of days',
-                value: days,
-                onMinus: () {
-                  if (days > 1) {
-                    setState(() {
-                      days--;
-                    });
-                  }
-                },
-                onPlus: () {
-                  setState(() {
-                    days++;
-                  });
-                },
               ),
 
               const SizedBox(height: 10),
@@ -234,6 +349,7 @@ class _TripPlanPageState extends State<TripPlanPage> {
 
               const SizedBox(height: 23),
 
+              // BUDGET
               const Text(
                 'Total Budget',
                 style: TextStyle(
@@ -248,11 +364,7 @@ class _TripPlanPageState extends State<TripPlanPage> {
               TextField(
                 controller: budgetController,
                 keyboardType: TextInputType.number,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF183B4E),
-                ),
+                style: const TextStyle(fontSize: 14, color: Color(0xFF183B4E)),
                 decoration: InputDecoration(
                   prefixText: '₹ ',
                   prefixStyle: const TextStyle(
@@ -286,24 +398,56 @@ class _TripPlanPageState extends State<TripPlanPage> {
                 ),
               ),
 
-              const SizedBox(height: 22),
+              const SizedBox(height: 25),
 
+              // CONTINUE
               SizedBox(
                 width: double.infinity,
                 height: 49,
                 child: ElevatedButton(
-                  onPressed: () {
-                    double budget = double.tryParse(budgetController.text) ?? 0;
+                  onPressed: () async {
+                    if (startDate == null || endDate == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please select your travel dates.'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    final double budget =
+                        double.tryParse(budgetController.text) ?? 0;
+
+                    if (budget <= 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter a valid budget.'),
+                        ),
+                      );
+                      return;
+                    }
+                    await FirebaseFirestore.instance.collection('trips').add({
+                      'destination': selectedDestination,
+                      'travelType': selectedTravelType,
+                      'travellers': travellers,
+                      'budget': budget,
+                      'startDate': Timestamp.fromDate(startDate!),
+                      'endDate': Timestamp.fromDate(endDate!),
+                      'tripDays': tripDays,
+                      'createdAt': FieldValue.serverTimestamp(),
+                    });
 
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FoodPreferencesPage(
+                        builder: (context) => TripResultPage(
                           destination: selectedDestination,
-                          duration: '$days days',
+                          duration: '$tripDays days',
                           travellers: '$travellers travellers',
                           travellerCount: travellers,
                           userBudget: budget,
+                          startDate: startDate!,
+                          endDate: endDate!,
                         ),
                       ),
                     );
@@ -322,8 +466,67 @@ class _TripPlanPageState extends State<TripPlanPage> {
                   ),
                 ),
               ),
+
+              const SizedBox(height: 10),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _dateCard({
+    required String title,
+    required DateTime? date,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        height: 70,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFD9E2E7)),
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.calendar_month_outlined,
+              size: 20,
+              color: Color(0xFF155E75),
+            ),
+            const SizedBox(width: 9),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Color(0xFF64748B),
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    _formatDate(date),
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: date == null
+                          ? const Color(0xFF64748B)
+                          : const Color(0xFF183B4E),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -351,11 +554,7 @@ class _TripPlanPageState extends State<TripPlanPage> {
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Color(0xFF183B4E),
-              ),
+              style: const TextStyle(fontSize: 14, color: Color(0xFF183B4E)),
             ),
           ),
           IconButton(
