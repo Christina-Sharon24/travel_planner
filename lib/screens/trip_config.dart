@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:travel_planner/screens/food.dart';
 import 'package:travel_planner/screens/trip_result.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -11,6 +10,16 @@ class TripPlanPage extends StatefulWidget {
 }
 
 class _TripPlanPageState extends State<TripPlanPage> {
+  // SafeTrail theme
+  static const Color primary = Color(0xFF6D3B47);
+  static const Color accent = Color(0xFFC9826B);
+  static const Color background = Color(0xFFFAF7F3);
+  static const Color card = Color(0xFFFFFDFC);
+  static const Color text = Color(0xFF292524);
+  static const Color secondaryText = Color(0xFF78716C);
+  static const Color highlight = Color(0xFFE8D5B5);
+  static const Color border = Color(0xFFE7DFD8);
+
   int travellers = 2;
 
   String selectedTravelType = 'Couple';
@@ -34,6 +43,15 @@ class _TripPlanPageState extends State<TripPlanPage> {
     'New York, USA',
   ];
 
+  final List<String> travelTypes = [
+    'Solo',
+    'Couple',
+    'Family',
+    'Friends',
+    'Group',
+    'Senior',
+  ];
+
   @override
   void dispose() {
     budgetController.dispose();
@@ -48,14 +66,25 @@ class _TripPlanPageState extends State<TripPlanPage> {
       initialDate: startDate ?? today,
       firstDate: today,
       lastDate: DateTime(today.year + 2),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: primary,
+              onPrimary: Colors.white,
+              surface: card,
+              onSurface: text,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null) {
       setState(() {
         startDate = picked;
 
-        // If the previously selected end date is before the new start date,
-        // clear it.
         if (endDate != null && endDate!.isBefore(picked)) {
           endDate = null;
         }
@@ -66,16 +95,34 @@ class _TripPlanPageState extends State<TripPlanPage> {
   Future<void> _selectEndDate() async {
     if (startDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select your start date first.')),
+        const SnackBar(
+          content: Text('Please select your start date first.'),
+          backgroundColor: primary,
+        ),
       );
       return;
     }
 
+    final DateTime minimumEndDate = startDate!.add(const Duration(days: 1));
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: endDate ?? startDate!.add(const Duration(days: 1)),
+      initialDate: endDate ?? minimumEndDate,
       firstDate: startDate!,
       lastDate: DateTime(startDate!.year + 2),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: primary,
+              onPrimary: Colors.white,
+              surface: card,
+              onSurface: text,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null) {
@@ -116,79 +163,209 @@ class _TripPlanPageState extends State<TripPlanPage> {
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 
+  Future<void> _continueToTrip() async {
+    // Validate dates
+    if (startDate == null || endDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select your travel dates.'),
+          backgroundColor: primary,
+        ),
+      );
+      return;
+    }
+
+    // Validate budget
+    final double budget = double.tryParse(budgetController.text.trim()) ?? 0;
+
+    if (budget <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid budget.'),
+          backgroundColor: primary,
+        ),
+      );
+      return;
+    }
+
+    // Show loading state
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const Center(child: CircularProgressIndicator(color: primary));
+      },
+    );
+
+    try {
+      // Save trip to Firestore
+      await FirebaseFirestore.instance.collection('trips').add({
+        'destination': selectedDestination,
+        'travelType': selectedTravelType,
+        'travellers': travellers,
+        'budget': budget,
+        'startDate': Timestamp.fromDate(startDate!),
+        'endDate': Timestamp.fromDate(endDate!),
+        'tripDays': tripDays,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      if (!mounted) return;
+
+      // Close loading dialog
+      Navigator.of(context).pop();
+
+      // Open Your Trip
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TripResultPage(
+            destination: selectedDestination,
+            duration: '$tripDays days',
+            travellers: '$travellers travellers',
+            travellerCount: travellers,
+            userBudget: budget,
+            startDate: startDate!,
+            endDate: endDate!,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      // Close loading dialog
+      Navigator.of(context).pop();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not save your trip. Please try again.'),
+          backgroundColor: primary,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+
+      debugPrint('Trip save error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF9),
+      backgroundColor: background,
+
       appBar: AppBar(
-        backgroundColor: const Color(0xFF155E75),
-        foregroundColor: Colors.white,
+        backgroundColor: background,
+        foregroundColor: text,
         elevation: 0,
+        centerTitle: false,
         title: const Text(
           'Plan Your Trip',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: text,
+          ),
         ),
       ),
+
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(18),
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Where are you travelling?',
-                style: TextStyle(
-                  fontSize: 21,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+              // Header
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: primary,
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.flight_takeoff_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Let’s plan your next adventure',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 23,
+                        fontWeight: FontWeight.w800,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                    Text(
+                      'Tell us a few details and SafeTrail will prepare your trip plan.',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.82),
+                        fontSize: 13.5,
+                        height: 1.45,
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
-              const SizedBox(height: 7),
+              const SizedBox(height: 28),
 
-              const Text(
-                'Choose your destination and trip details.',
-                style: TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+              // Destination
+              _sectionLabel(
+                icon: Icons.location_on_outlined,
+                title: 'Where are you going?',
               ),
 
-              const SizedBox(height: 22),
-
-              // DESTINATION
-              const Text(
-                'Destination',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
-                ),
-              ),
-
-              const SizedBox(height: 8),
+              const SizedBox(height: 11),
 
               Container(
-                height: 52,
-                padding: const EdgeInsets.symmetric(horizontal: 13),
+                height: 58,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFD9E2E7)),
+                  color: card,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: border),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: selectedDestination,
                     isExpanded: true,
                     icon: const Icon(
-                      Icons.keyboard_arrow_down,
-                      color: Color(0xFF155E75),
+                      Icons.keyboard_arrow_down_rounded,
+                      color: primary,
                     ),
+                    dropdownColor: card,
                     style: const TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF183B4E),
+                      fontSize: 15,
+                      color: text,
+                      fontWeight: FontWeight.w500,
                     ),
                     items: destinations.map((destination) {
                       return DropdownMenuItem<String>(
                         value: destination,
-                        child: Text(destination),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.place_outlined,
+                              size: 19,
+                              color: accent,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(destination),
+                          ],
+                        ),
                       );
                     }).toList(),
                     onChanged: (value) {
@@ -202,19 +379,15 @@ class _TripPlanPageState extends State<TripPlanPage> {
                 ),
               ),
 
-              const SizedBox(height: 23),
+              const SizedBox(height: 27),
 
-              // TRAVEL DATES
-              const Text(
-                'When are you travelling?',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
-                ),
+              // Dates
+              _sectionLabel(
+                icon: Icons.calendar_month_outlined,
+                title: 'When are you travelling?',
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 11),
 
               Row(
                 children: [
@@ -225,7 +398,7 @@ class _TripPlanPageState extends State<TripPlanPage> {
                       onTap: _selectStartDate,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: _dateCard(
                       title: 'End date',
@@ -237,241 +410,231 @@ class _TripPlanPageState extends State<TripPlanPage> {
               ),
 
               if (tripDays > 0) ...[
-                const SizedBox(height: 10),
+                const SizedBox(height: 11),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 13,
-                    vertical: 11,
+                    horizontal: 15,
+                    vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE6F3F4),
-                    borderRadius: BorderRadius.circular(10),
+                    color: highlight.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(13),
                   ),
-                  child: Text(
-                    '$tripDays ${tripDays == 1 ? 'day' : 'days'} trip',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF155E75),
-                    ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.schedule_rounded,
+                        size: 18,
+                        color: primary,
+                      ),
+                      const SizedBox(width: 9),
+                      Text(
+                        '$tripDays ${tripDays == 1 ? 'day' : 'days'} trip',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: primary,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
 
-              const SizedBox(height: 23),
+              const SizedBox(height: 27),
 
-              // TRAVELLER TYPE
-              const Text(
-                'Who are you travelling with?',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
-                ),
+              // Travel type
+              _sectionLabel(
+                icon: Icons.groups_outlined,
+                title: 'Who are you travelling with?',
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
 
               Wrap(
-                spacing: 7,
-                runSpacing: 7,
-                children:
-                    [
-                      'Solo',
-                      'Couple',
-                      'Family',
-                      'Friends',
-                      'Group',
-                      'Senior',
-                    ].map((type) {
-                      final bool selected = selectedTravelType == type;
+                spacing: 9,
+                runSpacing: 9,
+                children: travelTypes.map((type) {
+                  final bool selected = selectedTravelType == type;
 
-                      return ChoiceChip(
-                        label: Text(
-                          type,
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: selected
-                                ? FontWeight.w500
-                                : FontWeight.w400,
-                            color: selected
-                                ? Colors.white
-                                : const Color(0xFF183B4E),
-                          ),
-                        ),
-                        selected: selected,
-                        selectedColor: const Color(0xFF155E75),
-                        backgroundColor: Colors.white,
-                        side: const BorderSide(color: Color(0xFFD9E2E7)),
-                        onSelected: (value) {
-                          if (value) {
-                            setState(() {
-                              selectedTravelType = type;
-                            });
-                          }
-                        },
-                      );
-                    }).toList(),
+                  return ChoiceChip(
+                    label: Text(
+                      type,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: selected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                        color: selected ? Colors.white : text,
+                      ),
+                    ),
+                    selected: selected,
+                    selectedColor: primary,
+                    backgroundColor: card,
+                    side: BorderSide(color: selected ? primary : border),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 3,
+                    ),
+                    onSelected: (value) {
+                      if (value) {
+                        setState(() {
+                          selectedTravelType = type;
+                        });
+                      }
+                    },
+                  );
+                }).toList(),
               ),
 
-              const SizedBox(height: 23),
+              const SizedBox(height: 27),
 
-              // TRAVELLERS
-              const Text(
-                'Number of travellers',
-                style: TextStyle(
+              // Travellers
+              _sectionLabel(
+                icon: Icons.person_outline_rounded,
+                title: 'Number of travellers',
+              ),
+
+              const SizedBox(height: 11),
+
+              _counterCard(),
+
+              const SizedBox(height: 27),
+
+              // Budget
+              _sectionLabel(
+                icon: Icons.account_balance_wallet_outlined,
+                title: 'What is your total budget?',
+              ),
+
+              const SizedBox(height: 11),
+
+              TextField(
+                controller: budgetController,
+                keyboardType: TextInputType.number,
+                style: const TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+                  color: text,
+                  fontWeight: FontWeight.w500,
                 ),
-              ),
-
-              const SizedBox(height: 10),
-
-              _counterCard(
-                icon: Icons.people_outline,
-                title: 'Travellers',
-                value: travellers,
-                onMinus: () {
-                  if (travellers > 1) {
-                    setState(() {
-                      travellers--;
-                    });
-                  }
-                },
-                onPlus: () {
-                  setState(() {
-                    travellers++;
-                  });
-                },
-              ),
-
-              const SizedBox(height: 23),
-
-              // BUDGET
-              const Text(
-                'Total Budget',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+                decoration: InputDecoration(
+                  prefixText: '₹ ',
+                  prefixStyle: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: primary,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.currency_rupee_rounded,
+                    size: 19,
+                    color: primary,
+                  ),
+                  filled: true,
+                  fillColor: card,
+                  hintText: 'Enter your budget',
+                  hintStyle: const TextStyle(
+                    color: secondaryText,
+                    fontSize: 14,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 17,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(color: border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(color: border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(color: primary, width: 1.5),
+                  ),
                 ),
               ),
 
               const SizedBox(height: 9),
 
-              TextField(
-                controller: budgetController,
-                keyboardType: TextInputType.number,
-                style: const TextStyle(fontSize: 14, color: Color(0xFF183B4E)),
-                decoration: InputDecoration(
-                  prefixText: '₹ ',
-                  prefixStyle: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF155E75),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.account_balance_wallet_outlined,
-                    size: 19,
-                    color: Color(0xFF155E75),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 13,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFD9E2E7)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFD9E2E7)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFF155E75)),
-                  ),
-                ),
+              const Text(
+                'This helps SafeTrail estimate your overall trip cost.',
+                style: TextStyle(fontSize: 12, color: secondaryText),
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 30),
 
-              // CONTINUE
+              // Continue button
               SizedBox(
                 width: double.infinity,
-                height: 49,
+                height: 56,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    if (startDate == null || endDate == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please select your travel dates.'),
-                        ),
-                      );
-                      return;
-                    }
-
-                    final double budget =
-                        double.tryParse(budgetController.text) ?? 0;
-
-                    if (budget <= 0) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please enter a valid budget.'),
-                        ),
-                      );
-                      return;
-                    }
-                    await FirebaseFirestore.instance.collection('trips').add({
-                      'destination': selectedDestination,
-                      'travelType': selectedTravelType,
-                      'travellers': travellers,
-                      'budget': budget,
-                      'startDate': Timestamp.fromDate(startDate!),
-                      'endDate': Timestamp.fromDate(endDate!),
-                      'tripDays': tripDays,
-                      'createdAt': FieldValue.serverTimestamp(),
-                    });
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TripResultPage(
-                          destination: selectedDestination,
-                          duration: '$tripDays days',
-                          travellers: '$travellers travellers',
-                          travellerCount: travellers,
-                          userBudget: budget,
-                          startDate: startDate!,
-                          endDate: endDate!,
-                        ),
-                      ),
-                    );
-                  },
+                  onPressed: _continueToTrip,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF155E75),
+                    backgroundColor: primary,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(17),
                     ),
                   ),
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Continue to Your Trip',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(width: 9),
+                      Icon(Icons.arrow_forward_rounded, size: 20),
+                    ],
                   ),
                 ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
+
+              const Center(
+                child: Text(
+                  'You can review and change your trip plan later.',
+                  style: TextStyle(fontSize: 11.5, color: secondaryText),
+                ),
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _sectionLabel({required IconData icon, required String title}) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: primary.withOpacity(0.10),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, size: 19, color: primary),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 15.5,
+            fontWeight: FontWeight.w700,
+            color: text,
+          ),
+        ),
+      ],
     );
   }
 
@@ -480,25 +643,36 @@ class _TripPlanPageState extends State<TripPlanPage> {
     required DateTime? date,
     required VoidCallback onTap,
   }) {
+    final bool hasDate = date != null;
+
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
-        height: 70,
-        padding: const EdgeInsets.all(12),
+        height: 78,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFD9E2E7)),
+          color: card,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: hasDate ? primary.withOpacity(0.35) : border,
+          ),
         ),
         child: Row(
           children: [
-            const Icon(
-              Icons.calendar_month_outlined,
-              size: 20,
-              color: Color(0xFF155E75),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: hasDate ? primary.withOpacity(0.10) : background,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                Icons.calendar_today_rounded,
+                size: 18,
+                color: hasDate ? primary : secondaryText,
+              ),
             ),
-            const SizedBox(width: 9),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -506,21 +680,16 @@ class _TripPlanPageState extends State<TripPlanPage> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: Color(0xFF64748B),
-                    ),
+                    style: const TextStyle(fontSize: 11, color: secondaryText),
                   ),
-                  const SizedBox(height: 3),
+                  const SizedBox(height: 4),
                   Text(
                     _formatDate(date),
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: date == null
-                          ? const Color(0xFF64748B)
-                          : const Color(0xFF183B4E),
+                      fontWeight: hasDate ? FontWeight.w600 : FontWeight.w400,
+                      color: hasDate ? text : secondaryText,
                     ),
                   ),
                 ],
@@ -532,56 +701,92 @@ class _TripPlanPageState extends State<TripPlanPage> {
     );
   }
 
-  Widget _counterCard({
-    required IconData icon,
-    required String title,
-    required int value,
-    required VoidCallback onMinus,
-    required VoidCallback onPlus,
-  }) {
+  Widget _counterCard() {
     return Container(
-      height: 56,
-      padding: const EdgeInsets.symmetric(horizontal: 13),
+      height: 64,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFD9E2E7)),
+        color: card,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: border),
       ),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: const Color(0xFF155E75)),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(fontSize: 14, color: Color(0xFF183B4E)),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: primary.withOpacity(0.10),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(
+              Icons.people_outline_rounded,
+              size: 20,
+              color: primary,
             ),
           ),
-          IconButton(
-            onPressed: onMinus,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-            icon: const Icon(Icons.remove, size: 18, color: Color(0xFF155E75)),
-          ),
-          SizedBox(
-            width: 25,
+
+          const SizedBox(width: 11),
+
+          const Expanded(
             child: Text(
-              '$value',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF183B4E),
+              'Travellers',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: text,
               ),
             ),
           ),
-          IconButton(
-            onPressed: onPlus,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-            icon: const Icon(Icons.add, size: 18, color: Color(0xFF155E75)),
+
+          _counterButton(
+            icon: Icons.remove_rounded,
+            onTap: () {
+              if (travellers > 1) {
+                setState(() {
+                  travellers--;
+                });
+              }
+            },
+          ),
+
+          SizedBox(
+            width: 35,
+            child: Text(
+              '$travellers',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: primary,
+              ),
+            ),
+          ),
+
+          _counterButton(
+            icon: Icons.add_rounded,
+            onTap: () {
+              setState(() {
+                travellers++;
+              });
+            },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _counterButton({required IconData icon, required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: primary.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, size: 17, color: primary),
       ),
     );
   }

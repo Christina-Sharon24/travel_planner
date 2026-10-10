@@ -4,6 +4,7 @@ import 'package:travel_planner/screens/getting_around.dart';
 import 'package:travel_planner/screens/accommodation.dart';
 import 'package:travel_planner/screens/safety_prep_page.dart';
 import 'package:travel_planner/screens/getting_there.dart';
+import 'package:travel_planner/screens/packing_checklist.dart';
 
 class TripResultPage extends StatefulWidget {
   final String destination;
@@ -34,6 +35,7 @@ class _TripResultPageState extends State<TripResultPage> {
   // 0 means the user has not selected a stay yet.
   double selectedStayPrice = 0;
   double selectedFoodCost=0;
+  double selectedFlightPrice=0;
   Set<int> selectedFoodIndexes={};
   String _formatDate(DateTime date) {
     const months = [
@@ -61,6 +63,10 @@ class _TripResultPageState extends State<TripResultPage> {
   // Temporary travel cost.
   // We will replace this with actual/API data later.
   double _getTravelCost() {
+    if (selectedFlightPrice > 0) {
+      return selectedFlightPrice * widget.travellerCount;
+    }
+
     switch (widget.destination) {
       case 'Paris, France':
         return 25000;
@@ -635,7 +641,7 @@ class _TripResultPageState extends State<TripResultPage> {
               const SizedBox(height: 13),
               _planningCard(
                 context: context,
-                icon: Icons.flight_takeoff_outlined,
+                icon: Icons.restaurant_outlined,
                 title: 'Food',
                 subtitle: 'Set preferences and discover food options',
 
@@ -664,6 +670,34 @@ class _TripResultPageState extends State<TripResultPage> {
               ),
 
               const SizedBox(height: 10),
+
+              _planningCard(
+                context: context,
+                icon: Icons.flight_takeoff_outlined,
+                title: 'Getting There',
+                subtitle: 'Find flights to your destination',
+                onTap: () async {
+                  final selectedPrice = await Navigator.push<double>(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GettingTherePage(
+                        destination: widget.destination,
+                        startDate: widget.startDate,
+                        endDate: widget.endDate,
+                        travellerCount: widget.travellerCount,
+                        userBudget: widget.userBudget,
+                      ),
+                    ),
+                  );
+
+                  if (selectedPrice != null) {
+                    setState(() {
+                      selectedFlightPrice = selectedPrice;
+                    });
+                  }
+                },
+              ),
+
 
               // ACCOMMODATION
               _planningCard(
@@ -696,30 +730,7 @@ class _TripResultPageState extends State<TripResultPage> {
 
               const SizedBox(height: 10),
 
-              // FOOD
-              _planningCard(
-                context: context,
-                icon: Icons.restaurant_outlined,
-                title: 'Food',
-                subtitle: 'Set preferences and discover food options',
 
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FoodRecommendations(
-                        destination: widget.destination,
-                        duration: widget.duration,
-                        travellers: widget.travellers,
-                        travellerCount: widget.travellerCount,
-                        userBudget: widget.userBudget,
-                        initialSelectedFoods: selectedFoodIndexes,
-
-                      ),
-                    ),
-                  );
-                },
-              ),
 
               const SizedBox(height: 10),
 
@@ -765,6 +776,27 @@ class _TripResultPageState extends State<TripResultPage> {
                         travellers: widget.travellers,
                         travellerCount: widget.travellerCount,
                         userBudget: widget.userBudget,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+
+// PACKING
+              _planningCard(
+                context: context,
+                icon: Icons.luggage_outlined,
+                title: 'Packing Checklist',
+                subtitle: 'Prepare everything you need for your trip',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PackingChecklistPage(
+                        destination: widget.destination,
+                        duration: widget.duration,
+                        travellers: widget.travellers,
                       ),
                     ),
                   );

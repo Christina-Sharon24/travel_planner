@@ -602,7 +602,8 @@ class _GettingTherePageState extends State<GettingTherePage> {
                 height: 45,
                 child: OutlinedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pop(context,selectedPrice,
+                    );
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color(0xFF155E75),

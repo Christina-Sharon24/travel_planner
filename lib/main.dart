@@ -24,7 +24,7 @@ class SafeTrailApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFF5F7F7),
         fontFamily: 'sans-serif',
       ),
-      home: const LoginPage(),
+      home: LoginPage(),
     );
   }
 }
