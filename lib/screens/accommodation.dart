@@ -17,12 +17,20 @@ class StaySuggestionsPage extends StatefulWidget {
   });
 
   @override
-  State<StaySuggestionsPage> createState() =>
-      _StaySuggestionsPageState();
+  State<StaySuggestionsPage> createState() => _StaySuggestionsPageState();
 }
 
-class _StaySuggestionsPageState
-    extends State<StaySuggestionsPage> {
+class _StaySuggestionsPageState extends State<StaySuggestionsPage> {
+  // SafeTrail theme — matching TripPlanPage
+  static const Color primary = Color(0xFF6D3B47);
+  static const Color accent = Color(0xFFC9826B);
+  static const Color background = Color(0xFFFAF7F3);
+  static const Color card = Color(0xFFFFFDFC);
+  static const Color text = Color(0xFF292524);
+  static const Color secondaryText = Color(0xFF78716C);
+  static const Color highlight = Color(0xFFE8D5B5);
+  static const Color border = Color(0xFFE7DFD8);
+
   int selectedStay = 0;
 
   List<Map<String, dynamic>> getStayOptions() {
@@ -261,35 +269,36 @@ class _StaySuggestionsPageState
   Widget build(BuildContext context) {
     final stays = getStayOptions();
 
-    final selectedPrice =
-    stays[selectedStay]['price'] as double;
+    final selectedPrice = stays[selectedStay]['price'] as double;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF9),
+      backgroundColor: background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF155E75),
-        foregroundColor: Colors.white,
+        backgroundColor: background,
+        foregroundColor: text,
         elevation: 0,
+        centerTitle: false,
         title: const Text(
           'Accommodation',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: text,
           ),
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(18),
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'Find Your Stay',
                 style: TextStyle(
-                  fontSize: 21,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+                  fontSize: 23,
+                  fontWeight: FontWeight.w800,
+                  color: primary,
                 ),
               ),
 
@@ -299,74 +308,78 @@ class _StaySuggestionsPageState
                 'Choose a comfortable stay in ${widget.destination}.',
                 style: const TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF64748B),
+                  color: secondaryText,
+                  height: 1.45,
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 22),
 
               // TRIP INFO
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(13),
-                  border: Border.all(
-                    color: const Color(0xFFD9E2E7),
-                  ),
+                  color: card,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: border),
                 ),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.calendar_month_outlined,
-                      color: Color(0xFF155E75),
-                      size: 20,
+                    Container(
+                      padding: const EdgeInsets.all(9),
+                      decoration: BoxDecoration(
+                        color: primary.withOpacity(0.10),
+                        borderRadius: BorderRadius.circular(11),
+                      ),
+                      child: const Icon(
+                        Icons.calendar_month_outlined,
+                        color: primary,
+                        size: 21,
+                      ),
                     ),
 
-                    const SizedBox(width: 9),
+                    const SizedBox(width: 12),
 
                     Expanded(
                       child: Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
                             'Your trip',
                             style: TextStyle(
-                              fontSize: 11,
-                              color: Color(0xFF64748B),
+                              fontSize: 12,
+                              color: secondaryText,
                             ),
                           ),
-                          const SizedBox(height: 3),
+                          const SizedBox(height: 4),
                           Text(
-                            '${widget.duration} • ${widget.travellerCount} traveller${widget.travellerCount == 1 ? '' : 's'}',
+                            '${widget.duration} • '
+                            '${widget.travellerCount} traveller'
+                            '${widget.travellerCount == 1 ? '' : 's'}',
                             style: const TextStyle(
                               fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF183B4E),
+                              fontWeight: FontWeight.w600,
+                              color: text,
                             ),
                           ),
                         ],
                       ),
                     ),
 
-                    const Icon(
-                      Icons.hotel_outlined,
-                      color: Color(0xFF155E75),
-                    ),
+                    const Icon(Icons.hotel_outlined, color: accent, size: 24),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 23),
+              const SizedBox(height: 27),
 
               const Text(
                 'Recommended Stays',
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                  color: text,
                 ),
               ),
 
@@ -376,33 +389,30 @@ class _StaySuggestionsPageState
                 'Select an option that matches your comfort and budget.',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Color(0xFF64748B),
+                  color: secondaryText,
+                  height: 1.4,
                 ),
               ),
 
-              const SizedBox(height: 13),
+              const SizedBox(height: 15),
 
-              ...List.generate(
-                stays.length,
-                    (index) {
-                  final stay = stays[index];
-                  final bool selected =
-                      selectedStay == index;
+              ...List.generate(stays.length, (index) {
+                final stay = stays[index];
+                final bool selected = selectedStay == index;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 11),
-                    child: _stayCard(
-                      stay: stay,
-                      selected: selected,
-                      onTap: () {
-                        setState(() {
-                          selectedStay = index;
-                        });
-                      },
-                    ),
-                  );
-                },
-              ),
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _stayCard(
+                    stay: stay,
+                    selected: selected,
+                    onTap: () {
+                      setState(() {
+                        selectedStay = index;
+                      });
+                    },
+                  ),
+                );
+              }),
 
               const SizedBox(height: 5),
 
@@ -411,84 +421,84 @@ class _StaySuggestionsPageState
                 width: double.infinity,
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE6F4F1),
-                  borderRadius: BorderRadius.circular(13),
+                  color: highlight.withOpacity(0.45),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: highlight.withOpacity(0.8)),
                 ),
                 child: Row(
                   children: [
                     const Icon(
-                      Icons.check_circle_outline,
-                      color: Color(0xFF155E75),
-                      size: 21,
+                      Icons.check_circle_outline_rounded,
+                      color: primary,
+                      size: 22,
                     ),
 
-                    const SizedBox(width: 9),
+                    const SizedBox(width: 10),
 
                     Expanded(
                       child: Text(
                         '${stays[selectedStay]['name']} selected',
                         style: const TextStyle(
                           fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF183B4E),
+                          fontWeight: FontWeight.w600,
+                          color: text,
                         ),
                       ),
                     ),
 
+                    const SizedBox(width: 8),
+
                     Text(
                       '₹${selectedPrice.toStringAsFixed(0)}/night',
                       style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF155E75),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: primary,
                       ),
                     ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 22),
 
               // DONE
               SizedBox(
                 width: double.infinity,
-                height: 49,
+                height: 56,
                 child: ElevatedButton(
                   onPressed: () {
-                    final selectedPrice=
-                    stays[selectedStay]['price'] as double;
-                    Navigator.pop(context,selectedPrice);
+                    final selectedPrice =
+                        stays[selectedStay]['price'] as double;
+
+                    Navigator.pop(context, selectedPrice);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF155E75),
+                    backgroundColor: primary,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(17),
                     ),
                   ),
                   child: const Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         'Done',
                         style: TextStyle(
                           fontSize: 15,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      SizedBox(width: 7),
-                      Icon(
-                        Icons.check_rounded,
-                        size: 19,
-                      ),
+                      SizedBox(width: 9),
+                      Icon(Icons.check_rounded, size: 20),
                     ],
                   ),
                 ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
             ],
           ),
         ),
@@ -503,18 +513,16 @@ class _StaySuggestionsPageState
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(13),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(13),
+          color: card,
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: selected
-                ? const Color(0xFF155E75)
-                : const Color(0xFFD9E2E7),
-            width: selected ? 1.5 : 1,
+            color: selected ? primary : border,
+            width: selected ? 1.6 : 1,
           ),
         ),
         child: Row(
@@ -523,53 +531,25 @@ class _StaySuggestionsPageState
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: const Color(0xFFE6F4F1),
-                borderRadius: BorderRadius.circular(11),
+                color: primary.withOpacity(0.09),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                stay['icon'],
-                color: const Color(0xFF155E75),
-                size: 24,
-              ),
+              child: Icon(stay['icon'] as IconData, color: primary, size: 24),
             ),
 
             const SizedBox(width: 12),
 
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    stay['name'],
+                    stay['name'] as String,
                     style: const TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF183B4E),
+                      fontWeight: FontWeight.w700,
+                      color: text,
                     ),
-                  ),
-
-                  const SizedBox(height: 4),
-
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on_outlined,
-                        size: 13,
-                        color: Color(0xFF64748B),
-                      ),
-                      const SizedBox(width: 3),
-                      Expanded(
-                        child: Text(
-                          stay['area'],
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: Color(0xFF64748B),
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
 
                   const SizedBox(height: 5),
@@ -577,34 +557,55 @@ class _StaySuggestionsPageState
                   Row(
                     children: [
                       const Icon(
-                        Icons.star_rounded,
+                        Icons.location_on_outlined,
                         size: 14,
-                        color: Colors.orange,
+                        color: accent,
                       ),
                       const SizedBox(width: 3),
+                      Expanded(
+                        child: Text(
+                          stay['area'] as String,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: secondaryText,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 7),
+
+                  Wrap(
+                    spacing: 7,
+                    runSpacing: 5,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      const Icon(Icons.star_rounded, size: 15, color: accent),
                       Text(
                         '${stay['rating']}',
                         style: const TextStyle(
                           fontSize: 11,
-                          color: Color(0xFF64748B),
+                          color: secondaryText,
                         ),
                       ),
-                      const SizedBox(width: 9),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 7,
-                          vertical: 3,
+                          horizontal: 8,
+                          vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF1F5F6),
-                          borderRadius:
-                          BorderRadius.circular(5),
+                          color: background,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: border),
                         ),
                         child: Text(
-                          stay['type'],
+                          stay['type'] as String,
                           style: const TextStyle(
                             fontSize: 10,
-                            color: Color(0xFF64748B),
+                            fontWeight: FontWeight.w500,
+                            color: secondaryText,
                           ),
                         ),
                       ),
@@ -623,8 +624,8 @@ class _StaySuggestionsPageState
                   '₹${(stay['price'] as double).toStringAsFixed(0)}',
                   style: const TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF155E75),
+                    fontWeight: FontWeight.w700,
+                    color: primary,
                   ),
                 ),
 
@@ -632,22 +633,17 @@ class _StaySuggestionsPageState
 
                 const Text(
                   'per night',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Color(0xFF64748B),
-                  ),
+                  style: TextStyle(fontSize: 10, color: secondaryText),
                 ),
 
-                const SizedBox(height: 7),
+                const SizedBox(height: 8),
 
                 Icon(
                   selected
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_unchecked,
+                      ? Icons.radio_button_checked_rounded
+                      : Icons.radio_button_unchecked_rounded,
                   size: 20,
-                  color: selected
-                      ? const Color(0xFF155E75)
-                      : const Color(0xFF94A3B8),
+                  color: selected ? primary : secondaryText,
                 ),
               ],
             ),

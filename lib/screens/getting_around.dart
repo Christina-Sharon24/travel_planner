@@ -23,6 +23,16 @@ class GettingAroundPage extends StatefulWidget {
 }
 
 class _GettingAroundPage5State extends State<GettingAroundPage> {
+  // SafeTrail theme colours
+  static const Color primary = Color(0xFF6D3B47);
+  static const Color accent = Color(0xFFC9826B);
+  static const Color background = Color(0xFFFAF7F3);
+  static const Color cardColor = Color(0xFFFFFDFC);
+  static const Color mainText = Color(0xFF292524);
+  static const Color secondaryText = Color(0xFF78716C);
+  static const Color highlight = Color(0xFFE8D5B5);
+  static const Color borderColor = Color(0xFFE7DFD8);
+
   String selectedAirport = '';
   String selectedCityTransport = '';
 
@@ -311,22 +321,21 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
     final data = getTransportData().first;
 
     final airportOptions = data['airport'] as List<Map<String, dynamic>>;
-
     final cityOptions = data['city'] as List<Map<String, dynamic>>;
 
     if (selectedAirport.isEmpty) {
-      selectedAirport = airportOptions[0]['name'];
+      selectedAirport = airportOptions[0]['name'] as String;
     }
 
     if (selectedCityTransport.isEmpty) {
-      selectedCityTransport = cityOptions[0]['name'];
+      selectedCityTransport = cityOptions[0]['name'] as String;
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF9),
+      backgroundColor: background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF155E75),
-        foregroundColor: Colors.white,
+        backgroundColor: primary,
+        foregroundColor: cardColor,
         elevation: 0,
         title: const Text(
           'Getting Around',
@@ -344,7 +353,7 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
                 style: const TextStyle(
                   fontSize: 21,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+                  color: mainText,
                 ),
               ),
               const SizedBox(height: 7),
@@ -353,7 +362,7 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xFF64748B),
+                  color: secondaryText,
                 ),
               ),
               const SizedBox(height: 24),
@@ -363,24 +372,23 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+                  color: mainText,
                 ),
               ),
-
               const SizedBox(height: 10),
 
               ...airportOptions.map(
                 (option) => Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: _transportCard(
-                    name: option['name'],
-                    description: option['description'],
-                    price: option['price'],
-                    icon: option['icon'],
+                    name: option['name'] as String,
+                    description: option['description'] as String,
+                    price: option['price'] as String,
+                    icon: option['icon'] as IconData,
                     selected: selectedAirport == option['name'],
                     onTap: () {
                       setState(() {
-                        selectedAirport = option['name'];
+                        selectedAirport = option['name'] as String;
                       });
                     },
                   ),
@@ -394,24 +402,23 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+                  color: mainText,
                 ),
               ),
-
               const SizedBox(height: 10),
 
               ...cityOptions.map(
                 (option) => Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: _transportCard(
-                    name: option['name'],
-                    description: option['description'],
-                    price: option['price'],
-                    icon: option['icon'],
+                    name: option['name'] as String,
+                    description: option['description'] as String,
+                    price: option['price'] as String,
+                    icon: option['icon'] as IconData,
                     selected: selectedCityTransport == option['name'],
                     onTap: () {
                       setState(() {
-                        selectedCityTransport = option['name'];
+                        selectedCityTransport = option['name'] as String;
                       });
                     },
                   ),
@@ -423,25 +430,24 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE6F4F1),
+                  color: highlight.withOpacity(0.45),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: borderColor),
                 ),
                 child: const Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.info_outline,
-                      size: 20,
-                      color: Color(0xFF155E75),
-                    ),
+                    Icon(Icons.info_outline, size: 20, color: primary),
                     SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'Public transport is usually a good option for exploring major tourist areas.',
+                        'Public transport is usually a good option for '
+                        'exploring major tourist areas.',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
-                          color: Color(0xFF183B4E),
+                          color: secondaryText,
+                          height: 1.4,
                         ),
                       ),
                     ),
@@ -470,8 +476,8 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF155E75),
-                    foregroundColor: Colors.white,
+                    backgroundColor: primary,
+                    foregroundColor: cardColor,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -513,10 +519,10 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
       child: Container(
         padding: const EdgeInsets.all(13),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: selected ? const Color(0xFF155E75) : const Color(0xFFD9E2E7),
+            color: selected ? primary : borderColor,
             width: selected ? 1.4 : 1,
           ),
         ),
@@ -526,12 +532,10 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: selected
-                    ? const Color(0xFFE6F4F1)
-                    : const Color(0xFFF8FAF9),
+                color: selected ? highlight.withOpacity(0.55) : background,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: const Color(0xFF155E75), size: 21),
+              child: Icon(icon, color: primary, size: 21),
             ),
             const SizedBox(width: 11),
             Expanded(
@@ -543,7 +547,7 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF183B4E),
+                      color: mainText,
                     ),
                   ),
                   const SizedBox(height: 3),
@@ -552,7 +556,7 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF64748B),
+                      color: secondaryText,
                     ),
                   ),
                 ],
@@ -566,17 +570,15 @@ class _GettingAroundPage5State extends State<GettingAroundPage> {
                   price,
                   style: const TextStyle(
                     fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF183B4E),
+                    fontWeight: FontWeight.w600,
+                    color: mainText,
                   ),
                 ),
                 const SizedBox(height: 5),
                 Icon(
                   selected ? Icons.check_circle : Icons.radio_button_unchecked,
                   size: 19,
-                  color: selected
-                      ? const Color(0xFF2A9D8F)
-                      : const Color(0xFFB8C4CA),
+                  color: selected ? accent : secondaryText,
                 ),
               ],
             ),

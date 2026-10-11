@@ -23,9 +23,20 @@ class FoodRecommendations extends StatefulWidget {
 }
 
 class _FoodRecommendationsState extends State<FoodRecommendations> {
+  // SafeTrail theme
+  static const Color primary = Color(0xFF6D3B47);
+  static const Color accent = Color(0xFFC9826B);
+  static const Color background = Color(0xFFFAF7F3);
+  static const Color cardColor = Color(0xFFFFFDFC);
+  static const Color mainText = Color(0xFF292524);
+  static const Color secondaryText = Color(0xFF78716C);
+  static const Color highlight = Color(0xFFE8D5B5);
+  static const Color borderColor = Color(0xFFE7DFD8);
+
   String selectedCategory = 'Local';
 
   late Set<int> selectedFoods;
+
   @override
   void initState() {
     super.initState();
@@ -296,11 +307,12 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
 
   double get selectedTotal {
     final foods = getFoodOptions();
-
     double total = 0;
 
     for (final index in selectedFoods) {
-      total += (foods[index]['price'] as int).toDouble();
+      if (index >= 0 && index < foods.length) {
+        total += (foods[index]['price'] as int).toDouble();
+      }
     }
 
     return total * widget.travellerCount;
@@ -322,10 +334,10 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF9),
+      backgroundColor: background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF155E75),
-        foregroundColor: Colors.white,
+        backgroundColor: primary,
+        foregroundColor: cardColor,
         elevation: 0,
         title: const Text(
           'Food',
@@ -343,22 +355,19 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                 style: TextStyle(
                   fontSize: 21,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+                  color: mainText,
                 ),
               ),
-
               const SizedBox(height: 7),
-
               Text(
                 'Discover food options in ${widget.destination}. '
                 'You can decide what to eat during your trip.',
                 style: const TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF64748B),
+                  color: secondaryText,
                   height: 1.4,
                 ),
               ),
-
               const SizedBox(height: 20),
 
               // Estimated food budget
@@ -366,8 +375,9 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE6F4F1),
+                  color: highlight.withValues(alpha: 0.45),
                   borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: borderColor),
                 ),
                 child: Row(
                   children: [
@@ -375,17 +385,15 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: cardColor,
                         borderRadius: BorderRadius.circular(11),
                       ),
                       child: const Icon(
                         Icons.account_balance_wallet_outlined,
-                        color: Color(0xFF155E75),
+                        color: primary,
                       ),
                     ),
-
                     const SizedBox(width: 12),
-
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,28 +402,24 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                             'Estimated food budget',
                             style: TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF64748B),
+                              color: secondaryText,
                             ),
                           ),
-
                           const SizedBox(height: 3),
-
                           Text(
                             '₹${estimatedFoodBudget.toStringAsFixed(0)}',
                             style: const TextStyle(
                               fontSize: 19,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF183B4E),
+                              color: primary,
                             ),
                           ),
-
                           const SizedBox(height: 2),
-
                           const Text(
                             'Approximate amount for the whole trip',
                             style: TextStyle(
                               fontSize: 11,
-                              color: Color(0xFF64748B),
+                              color: secondaryText,
                             ),
                           ),
                         ],
@@ -424,20 +428,16 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 24),
-
               const Text(
                 'What are you looking for?',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+                  color: mainText,
                 ),
               ),
-
               const SizedBox(height: 10),
-
               SizedBox(
                 height: 42,
                 child: ListView.separated(
@@ -453,18 +453,16 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                         category,
                         style: TextStyle(
                           fontSize: 12,
-                          color: selected
-                              ? Colors.white
-                              : const Color(0xFF183B4E),
+                          color: selected ? cardColor : mainText,
                           fontWeight: selected
                               ? FontWeight.w500
                               : FontWeight.w400,
                         ),
                       ),
                       selected: selected,
-                      selectedColor: const Color(0xFF155E75),
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(color: Color(0xFFD9E2E7)),
+                      selectedColor: primary,
+                      backgroundColor: cardColor,
+                      side: BorderSide(color: selected ? primary : borderColor),
                       onSelected: (_) {
                         setState(() {
                           selectedCategory = category;
@@ -474,9 +472,7 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                   },
                 ),
               ),
-
               const SizedBox(height: 20),
-
               Row(
                 children: [
                   const Expanded(
@@ -485,23 +481,17 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF183B4E),
+                        color: mainText,
                       ),
                     ),
                   ),
-
                   Text(
                     '${filteredFoods.length} options',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF64748B),
-                    ),
+                    style: const TextStyle(fontSize: 12, color: secondaryText),
                   ),
                 ],
               ),
-
               const SizedBox(height: 11),
-
               ...filteredFoods.map((food) {
                 final originalIndex = allFoods.indexOf(food);
                 final selected = selectedFoods.contains(originalIndex);
@@ -523,7 +513,6 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                   ),
                 );
               }),
-
               const SizedBox(height: 8),
 
               // Selected food summary
@@ -532,9 +521,9 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: cardColor,
                     borderRadius: BorderRadius.circular(13),
-                    border: Border.all(color: const Color(0xFFD9E2E7)),
+                    border: Border.all(color: borderColor),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,22 +533,18 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF183B4E),
+                          color: mainText,
                         ),
                       ),
-
                       const SizedBox(height: 7),
-
                       Text(
                         '${selectedFoods.length} option${selectedFoods.length == 1 ? '' : 's'} selected',
                         style: const TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF64748B),
+                          color: secondaryText,
                         ),
                       ),
-
                       const SizedBox(height: 9),
-
                       Row(
                         children: [
                           const Expanded(
@@ -567,17 +552,16 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                               'Estimated cost for your group',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Color(0xFF64748B),
+                                color: secondaryText,
                               ),
                             ),
                           ),
-
                           Text(
                             '₹${selectedTotal.toStringAsFixed(0)}',
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF155E75),
+                              color: primary,
                             ),
                           ),
                         ],
@@ -585,7 +569,6 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                     ],
                   ),
                 ),
-
               const SizedBox(height: 20),
 
               // Information box
@@ -593,20 +576,15 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF0F5F6),
+                  color: cardColor,
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: borderColor),
                 ),
                 child: const Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.info_outline,
-                      size: 19,
-                      color: Color(0xFF155E75),
-                    ),
-
+                    Icon(Icons.info_outline, size: 19, color: accent),
                     SizedBox(width: 9),
-
                     Expanded(
                       child: Text(
                         'You do not have to plan every meal now. '
@@ -614,7 +592,7 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                         'when you are actually travelling.',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF64748B),
+                          color: secondaryText,
                           height: 1.4,
                         ),
                       ),
@@ -622,9 +600,7 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 20),
-
               SizedBox(
                 width: double.infinity,
                 height: 49,
@@ -632,12 +608,12 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                   onPressed: () {
                     Navigator.pop(context, {
                       'selectedFoods': selectedFoods,
-                      'total':selectedTotal
+                      'total': selectedTotal,
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF155E75),
-                    foregroundColor: Colors.white,
+                    backgroundColor: primary,
+                    foregroundColor: cardColor,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -649,7 +625,6 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 10),
             ],
           ),
@@ -669,10 +644,10 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           borderRadius: BorderRadius.circular(13),
           border: Border.all(
-            color: selected ? const Color(0xFF155E75) : const Color(0xFFD9E2E7),
+            color: selected ? primary : borderColor,
             width: selected ? 1.5 : 1,
           ),
         ),
@@ -683,18 +658,12 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
               width: 46,
               height: 46,
               decoration: BoxDecoration(
-                color: const Color(0xFFE6F4F1),
+                color: highlight.withValues(alpha: 0.45),
                 borderRadius: BorderRadius.circular(11),
               ),
-              child: Icon(
-                food['icon'] as IconData,
-                color: const Color(0xFF155E75),
-                size: 23,
-              ),
+              child: Icon(food['icon'] as IconData, color: primary, size: 23),
             ),
-
             const SizedBox(width: 12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -704,46 +673,35 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF183B4E),
+                      color: mainText,
                     ),
                   ),
-
                   const SizedBox(height: 4),
-
                   Text(
                     food['place'] as String,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF64748B),
-                    ),
+                    style: const TextStyle(fontSize: 12, color: secondaryText),
                   ),
-
                   const SizedBox(height: 3),
-
                   Row(
                     children: [
                       const Icon(
                         Icons.location_on_outlined,
                         size: 13,
-                        color: Color(0xFF64748B),
+                        color: secondaryText,
                       ),
-
                       const SizedBox(width: 3),
-
                       Expanded(
                         child: Text(
                           food['location'] as String,
                           style: const TextStyle(
                             fontSize: 11,
-                            color: Color(0xFF64748B),
+                            color: secondaryText,
                           ),
                         ),
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 7),
-
                   Row(
                     children: [
                       Text(
@@ -751,25 +709,17 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF155E75),
+                          color: primary,
                         ),
                       ),
-
                       const SizedBox(width: 10),
-
-                      const Icon(
-                        Icons.star,
-                        size: 13,
-                        color: Color(0xFFE39B24),
-                      ),
-
+                      const Icon(Icons.star, size: 13, color: accent),
                       const SizedBox(width: 3),
-
                       Text(
                         food['rating'] as String,
                         style: const TextStyle(
                           fontSize: 11,
-                          color: Color(0xFF64748B),
+                          color: secondaryText,
                         ),
                       ),
                     ],
@@ -777,14 +727,10 @@ class _FoodRecommendationsState extends State<FoodRecommendations> {
                 ],
               ),
             ),
-
             const SizedBox(width: 7),
-
             Icon(
               selected ? Icons.check_circle : Icons.add_circle_outline,
-              color: selected
-                  ? const Color(0xFF155E75)
-                  : const Color(0xFF94A3B8),
+              color: selected ? primary : secondaryText,
               size: 22,
             ),
           ],

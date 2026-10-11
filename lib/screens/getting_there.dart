@@ -21,6 +21,16 @@ class GettingTherePage extends StatefulWidget {
 }
 
 class _GettingTherePageState extends State<GettingTherePage> {
+  // SafeTrail theme
+  static const Color primary = Color(0xFF6D3B47);
+  static const Color accent = Color(0xFFC9826B);
+  static const Color background = Color(0xFFFAF7F3);
+  static const Color cardColor = Color(0xFFFFFDFC);
+  static const Color mainText = Color(0xFF292524);
+  static const Color secondaryText = Color(0xFF78716C);
+  static const Color highlight = Color(0xFFE8D5B5);
+  static const Color borderColor = Color(0xFFE7DFD8);
+
   int selectedFlight = 0;
 
   String _formatDate(DateTime date) {
@@ -305,13 +315,12 @@ class _GettingTherePageState extends State<GettingTherePage> {
     final flights = _getFlights();
 
     final selectedPrice = flights[selectedFlight]['price'] as double;
-
     final totalFlightCost = selectedPrice * widget.travellerCount;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF9),
+      backgroundColor: background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF155E75),
+        backgroundColor: primary,
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text(
@@ -325,32 +334,27 @@ class _GettingTherePageState extends State<GettingTherePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               const Text(
                 'Find Your Flight',
                 style: TextStyle(
                   fontSize: 21,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+                  color: mainText,
                 ),
               ),
-
               const SizedBox(height: 7),
-
               Text(
                 'Flights from Chennai to ${widget.destination}.',
-                style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+                style: const TextStyle(fontSize: 14, color: secondaryText),
               ),
-
               const SizedBox(height: 20),
-
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: cardColor,
                   borderRadius: BorderRadius.circular(13),
-                  border: Border.all(color: const Color(0xFFD9E2E7)),
+                  border: Border.all(color: borderColor),
                 ),
                 child: Column(
                   children: [
@@ -358,7 +362,7 @@ class _GettingTherePageState extends State<GettingTherePage> {
                       children: [
                         const Icon(
                           Icons.flight_takeoff_outlined,
-                          color: Color(0xFF155E75),
+                          color: primary,
                           size: 21,
                         ),
                         const SizedBox(width: 9),
@@ -367,18 +371,18 @@ class _GettingTherePageState extends State<GettingTherePage> {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF183B4E),
+                            color: mainText,
                           ),
                         ),
                         const Expanded(
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: Divider(color: Color(0xFFD9E2E7)),
+                            child: Divider(color: borderColor),
                           ),
                         ),
                         const Icon(
                           Icons.location_on_outlined,
-                          color: Color(0xFF155E75),
+                          color: primary,
                           size: 21,
                         ),
                         const SizedBox(width: 6),
@@ -389,42 +393,40 @@ class _GettingTherePageState extends State<GettingTherePage> {
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF183B4E),
+                              color: mainText,
                             ),
                           ),
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 13),
-
                     Row(
                       children: [
                         const Icon(
                           Icons.calendar_month_outlined,
                           size: 18,
-                          color: Color(0xFF155E75),
+                          color: primary,
                         ),
                         const SizedBox(width: 8),
                         Text(
                           _formatDate(widget.startDate),
                           style: const TextStyle(
                             fontSize: 13,
-                            color: Color(0xFF64748B),
+                            color: secondaryText,
                           ),
                         ),
                         const SizedBox(width: 20),
                         const Icon(
                           Icons.people_outline,
                           size: 18,
-                          color: Color(0xFF155E75),
+                          color: primary,
                         ),
                         const SizedBox(width: 7),
                         Text(
                           '${widget.travellerCount} traveller${widget.travellerCount == 1 ? '' : 's'}',
                           style: const TextStyle(
                             fontSize: 13,
-                            color: Color(0xFF64748B),
+                            color: secondaryText,
                           ),
                         ),
                       ],
@@ -432,27 +434,21 @@ class _GettingTherePageState extends State<GettingTherePage> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 23),
-
               const Text(
                 'Available Flights',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF183B4E),
+                  color: mainText,
                 ),
               ),
-
               const SizedBox(height: 7),
-
               const Text(
                 'Select a flight that works for your budget.',
-                style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+                style: TextStyle(fontSize: 13, color: secondaryText),
               ),
-
               const SizedBox(height: 13),
-
               ...List.generate(flights.length, (index) {
                 final flight = flights[index];
                 final bool selected = selectedFlight == index;
@@ -470,13 +466,12 @@ class _GettingTherePageState extends State<GettingTherePage> {
                   ),
                 );
               }),
-
               const SizedBox(height: 7),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE6F4F1),
+                  color: highlight,
                   borderRadius: BorderRadius.circular(13),
                 ),
                 child: Column(
@@ -486,24 +481,19 @@ class _GettingTherePageState extends State<GettingTherePage> {
                       children: [
                         const Text(
                           'Flight per traveller',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Color(0xFF64748B),
-                          ),
+                          style: TextStyle(fontSize: 13, color: secondaryText),
                         ),
                         Text(
                           '₹${selectedPrice.toStringAsFixed(0)}',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF183B4E),
+                            color: mainText,
                           ),
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 9),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -511,7 +501,7 @@ class _GettingTherePageState extends State<GettingTherePage> {
                           'Total for ${widget.travellerCount} traveller${widget.travellerCount == 1 ? '' : 's'}',
                           style: const TextStyle(
                             fontSize: 13,
-                            color: Color(0xFF64748B),
+                            color: secondaryText,
                           ),
                         ),
                         Text(
@@ -519,7 +509,7 @@ class _GettingTherePageState extends State<GettingTherePage> {
                           style: const TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF155E75),
+                            color: primary,
                           ),
                         ),
                       ],
@@ -527,14 +517,13 @@ class _GettingTherePageState extends State<GettingTherePage> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 12),
               if (totalFlightCost > widget.userBudget)
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(13),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF3E0),
+                    color: highlight,
                     borderRadius: BorderRadius.circular(11),
                   ),
                   child: Row(
@@ -543,22 +532,18 @@ class _GettingTherePageState extends State<GettingTherePage> {
                       const Icon(
                         Icons.warning_amber_rounded,
                         size: 20,
-                        color: Colors.orange,
+                        color: accent,
                       ),
                       const SizedBox(width: 9),
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           'This flight costs more than your current trip budget. You may need to increase your budget.',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF7A4E00),
-                          ),
+                          style: TextStyle(fontSize: 12, color: mainText),
                         ),
                       ),
                     ],
                   ),
                 ),
-
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -567,11 +552,11 @@ class _GettingTherePageState extends State<GettingTherePage> {
                   onPressed: () {
                     _showBookingMessage(
                       context,
-                      flights[selectedFlight]['airline'],
+                      flights[selectedFlight]['airline'] as String,
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF155E75),
+                    backgroundColor: primary,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -594,20 +579,17 @@ class _GettingTherePageState extends State<GettingTherePage> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 10),
-
               SizedBox(
                 width: double.infinity,
                 height: 45,
                 child: OutlinedButton(
                   onPressed: () {
-                    Navigator.pop(context,selectedPrice,
-                    );
+                    Navigator.pop(context, selectedPrice);
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF155E75),
-                    side: const BorderSide(color: Color(0xFFD9E2E7)),
+                    foregroundColor: primary,
+                    side: const BorderSide(color: borderColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -618,7 +600,6 @@ class _GettingTherePageState extends State<GettingTherePage> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 10),
             ],
           ),
@@ -626,6 +607,7 @@ class _GettingTherePageState extends State<GettingTherePage> {
       ),
     );
   }
+
   Widget _flightCard({
     required Map<String, dynamic> flight,
     required bool selected,
@@ -638,10 +620,10 @@ class _GettingTherePageState extends State<GettingTherePage> {
         width: double.infinity,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           borderRadius: BorderRadius.circular(13),
           border: Border.all(
-            color: selected ? const Color(0xFF155E75) : const Color(0xFFD9E2E7),
+            color: selected ? primary : borderColor,
             width: selected ? 1.5 : 1,
           ),
         ),
@@ -653,71 +635,60 @@ class _GettingTherePageState extends State<GettingTherePage> {
                   width: 42,
                   height: 42,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE6F4F1),
+                    color: highlight,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
                     Icons.flight_outlined,
-                    color: Color(0xFF155E75),
+                    color: primary,
                     size: 21,
                   ),
                 ),
-
                 const SizedBox(width: 11),
-
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        flight['airline'],
+                        flight['airline'] as String,
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF183B4E),
+                          color: mainText,
                         ),
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        flight['code'],
+                        flight['code'] as String,
                         style: const TextStyle(
                           fontSize: 11,
-                          color: Color(0xFF64748B),
+                          color: secondaryText,
                         ),
                       ),
                     ],
                   ),
                 ),
-
                 Text(
                   '₹${(flight['price'] as double).toStringAsFixed(0)}',
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF155E75),
+                    color: primary,
                   ),
                 ),
-
                 const SizedBox(width: 7),
-
                 Icon(
                   selected
                       ? Icons.radio_button_checked
                       : Icons.radio_button_unchecked,
-                  color: selected
-                      ? const Color(0xFF155E75)
-                      : const Color(0xFF94A3B8),
+                  color: selected ? primary : secondaryText,
                   size: 21,
                 ),
               ],
             ),
-
             const SizedBox(height: 14),
-
-            const Divider(color: Color(0xFFE6ECEF)),
-
+            const Divider(color: borderColor),
             const SizedBox(height: 12),
-
             Row(
               children: [
                 Expanded(
@@ -725,69 +696,60 @@ class _GettingTherePageState extends State<GettingTherePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        flight['departure'],
+                        flight['departure'] as String,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF183B4E),
+                          color: mainText,
                         ),
                       ),
                       const SizedBox(height: 3),
                       const Text(
                         'Chennai',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Color(0xFF64748B),
-                        ),
+                        style: TextStyle(fontSize: 11, color: secondaryText),
                       ),
                     ],
                   ),
                 ),
-
                 Column(
                   children: [
                     Text(
-                      flight['duration'],
+                      flight['duration'] as String,
                       style: const TextStyle(
                         fontSize: 10,
-                        color: Color(0xFF64748B),
+                        color: secondaryText,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Icon(
-                      Icons.arrow_forward,
-                      size: 18,
-                      color: Color(0xFF155E75),
-                    ),
+                    const Icon(Icons.arrow_forward, size: 18, color: primary),
                     const SizedBox(height: 4),
                     Text(
-                      flight['stops'],
+                      flight['stops'] as String,
                       style: const TextStyle(
                         fontSize: 10,
-                        color: Color(0xFF64748B),
+                        color: secondaryText,
                       ),
                     ),
                   ],
                 ),
-
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        flight['arrival'],
+                        flight['arrival'] as String,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF183B4E),
+                          color: mainText,
                         ),
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        flight['code'],
+                        flight['code'] as String,
                         style: const TextStyle(
                           fontSize: 11,
-                          color: Color(0xFF64748B),
+                          color: secondaryText,
                         ),
                       ),
                     ],
@@ -810,27 +772,22 @@ class _GettingTherePageState extends State<GettingTherePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: cardColor,
           title: const Text(
             'Ready to Book?',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF183B4E),
-            ),
+            style: TextStyle(fontWeight: FontWeight.w600, color: mainText),
           ),
           content: Text(
             'You selected $airline for ${widget.destination}.\n\n'
             'In the full version of the app, this button can take you to a flight booking service to complete your booking.',
-            style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+            style: const TextStyle(fontSize: 14, color: secondaryText),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text(
-                'Close',
-                style: TextStyle(color: Color(0xFF155E75)),
-              ),
+              child: const Text('Close', style: TextStyle(color: primary)),
             ),
           ],
         );

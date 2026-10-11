@@ -8,6 +8,7 @@ class TripModePage extends StatelessWidget {
   final String duration;
   final String travellers;
   final double userBudget;
+  final List<Map<String, dynamic>> expenses;
 
   const TripModePage({
     super.key,
@@ -15,7 +16,18 @@ class TripModePage extends StatelessWidget {
     required this.duration,
     required this.travellers,
     required this.userBudget,
+    this.expenses = const [],
   });
+
+  // SafeTrail theme
+  static const Color primary = Color(0xFF6D3B47);
+  static const Color accent = Color(0xFFC9826B);
+  static const Color background = Color(0xFFFAF7F3);
+  static const Color cardColor = Color(0xFFFFFDFC);
+  static const Color mainText = Color(0xFF292524);
+  static const Color secondaryText = Color(0xFF78716C);
+  static const Color highlight = Color(0xFFE8D5B5);
+  static const Color borderColor = Color(0xFFE7DFD8);
 
   String getDestinationImage() {
     if (destination == 'Paris, France') {
@@ -79,6 +91,18 @@ class TripModePage extends StatelessWidget {
     }
 
     return 'Check local emergency number';
+  }
+
+  double getTotalSpent() {
+    return expenses.fold<double>(0.0, (total, expense) {
+      final amount = expense['amount'];
+
+      if (amount is num) {
+        return total + amount.toDouble();
+      }
+
+      return total + (double.tryParse(amount?.toString() ?? '') ?? 0.0);
+    });
   }
 
   List<Map<String, dynamic>> getItinerary() {
@@ -316,16 +340,21 @@ class TripModePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final itinerary = getItinerary();
+    final double spent = getTotalSpent();
+    final double remaining = userBudget - spent;
+    final double progress = userBudget > 0
+        ? (spent / userBudget).clamp(0.0, 1.0)
+        : 0.0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF9),
+      backgroundColor: background,
       body: SafeArea(
         child: Column(
           children: [
             // HEADER
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              color: const Color(0xFF155E75),
+              color: primary,
               child: Row(
                 children: [
                   Expanded(
@@ -336,22 +365,21 @@ class TripModePage extends StatelessWidget {
                           'TRIP MODE',
                           style: TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                             fontSize: 16,
                           ),
                         ),
-                        const SizedBox(height: 3),
+                        const SizedBox(height: 4),
                         Text(
                           '$destination • $duration',
                           style: const TextStyle(
-                            color: Colors.white70,
+                            color: Color(0xFFE8D5D5),
                             fontSize: 12,
                           ),
                         ),
                       ],
                     ),
                   ),
-
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -365,12 +393,12 @@ class TripModePage extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFE76F51),
+                      backgroundColor: accent,
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                        horizontal: 18,
+                        vertical: 10,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -378,7 +406,7 @@ class TripModePage extends StatelessWidget {
                     ),
                     child: const Text(
                       'SOS',
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                      style: TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ),
                 ],
@@ -392,12 +420,24 @@ class TripModePage extends StatelessWidget {
                 children: [
                   // DESTINATION IMAGE
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(18),
                     child: Image.asset(
                       getDestinationImage(),
                       width: double.infinity,
-                      height: 180,
+                      height: 190,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 190,
+                          color: highlight,
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.landscape_outlined,
+                            size: 55,
+                            color: primary,
+                          ),
+                        );
+                      },
                     ),
                   ),
 
@@ -406,47 +446,44 @@ class TripModePage extends StatelessWidget {
                   Text(
                     destination,
                     style: const TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF183B4E),
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: mainText,
                     ),
                   ),
 
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 5),
 
                   Text(
                     '$duration • $travellers',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Color(0xFF64748B),
-                    ),
+                    style: const TextStyle(fontSize: 13, color: secondaryText),
                   ),
 
-                  const SizedBox(height: 23),
+                  const SizedBox(height: 25),
 
                   const Text(
-                    'TODAY\'S ITINERARY',
+                    "TODAY'S ITINERARY",
                     style: TextStyle(
                       fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF155E75),
+                      fontWeight: FontWeight.w800,
+                      color: primary,
                       letterSpacing: 1,
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
 
                   for (final item in itinerary)
                     _buildItineraryCard(
-                      item['time'],
-                      item['title'],
-                      item['price'],
-                      item['icon'],
+                      item['time'] as String,
+                      item['title'] as String,
+                      item['price'] as String,
+                      item['icon'] as IconData,
                     ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
 
-                  // BUDGET
+                  // BUDGET SUMMARY
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -455,63 +492,85 @@ class TripModePage extends StatelessWidget {
                           builder: (_) => TripWalletPage(
                             destination: destination,
                             duration: duration,
-                            userBudget: userBudget, newExpense: {},
+                            userBudget: userBudget,
+                            expenses: expenses,
                           ),
                         ),
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF155E75),
-                        borderRadius: BorderRadius.circular(13),
+                        color: primary,
+                        borderRadius: BorderRadius.circular(18),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'TODAY\'S SPENDING',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'TRIP SPENDING',
+                                  style: TextStyle(
+                                    color: Color(0xFFE8D5D5),
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.8,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 5),
-                              const Text(
-                                '₹4,200',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
+                                const SizedBox(height: 7),
+                                Text(
+                                  '₹${spent.toStringAsFixed(0)}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w800,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 3),
-                              Text(
-                                'of ₹${userBudget.toStringAsFixed(0)} budget',
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 11,
+                                const SizedBox(height: 4),
+                                Text(
+                                  'of ₹${userBudget.toStringAsFixed(0)} budget',
+                                  style: const TextStyle(
+                                    color: Color(0xFFE8D5D5),
+                                    fontSize: 12,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 12),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: LinearProgressIndicator(
+                                    value: progress,
+                                    backgroundColor: const Color(0xFF895D66),
+                                    color: highlight,
+                                    minHeight: 6,
+                                  ),
+                                ),
+                                const SizedBox(height: 7),
+                                Text(
+                                  remaining >= 0
+                                      ? '₹${remaining.toStringAsFixed(0)} remaining'
+                                      : '₹${remaining.abs().toStringAsFixed(0)} over budget',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                          const SizedBox(width: 12),
                           Container(
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(13),
                             decoration: const BoxDecoration(
-                              color: Colors.white24,
+                              color: Color(0xFF895D66),
                               shape: BoxShape.circle,
                             ),
-                            child: const Text(
-                              '42%',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
-                              ),
+                            child: const Icon(
+                              Icons.account_balance_wallet_outlined,
+                              color: Colors.white,
+                              size: 27,
                             ),
                           ),
                         ],
@@ -524,8 +583,8 @@ class TripModePage extends StatelessWidget {
                   // ADD EXPENSE
                   SizedBox(
                     width: double.infinity,
-                    height: 48,
-                    child: OutlinedButton(
+                    height: 50,
+                    child: OutlinedButton.icon(
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -534,27 +593,27 @@ class TripModePage extends StatelessWidget {
                               destination: destination,
                               duration: duration,
                               userBudget: userBudget,
+                              expenses: expenses,
                             ),
                           ),
                         );
                       },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFF155E75)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                      icon: const Icon(Icons.add_rounded),
+                      label: const Text(
+                        'Add Expense',
+                        style: TextStyle(fontWeight: FontWeight.w700),
                       ),
-                      child: const Text(
-                        '+ Add Expense',
-                        style: TextStyle(
-                          color: Color(0xFF155E75),
-                          fontWeight: FontWeight.w600,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: primary,
+                        side: const BorderSide(color: primary, width: 1.2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                 ],
               ),
             ),
@@ -574,36 +633,33 @@ class TripModePage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(13),
-        border: Border.all(color: const Color(0xFFD9E2E7)),
+        color: cardColor,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: borderColor),
       ),
       child: Row(
         children: [
           SizedBox(
-            width: 65,
+            width: 68,
             child: Text(
               time,
               style: const TextStyle(
                 fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF64748B),
+                fontWeight: FontWeight.w700,
+                color: secondaryText,
               ),
             ),
           ),
-
           Container(
-            width: 38,
-            height: 38,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
-              color: const Color(0xFFE6F4F1),
-              borderRadius: BorderRadius.circular(9),
+              color: const Color(0xFFF1DFDA),
+              borderRadius: BorderRadius.circular(11),
             ),
-            child: Icon(icon, color: const Color(0xFF155E75), size: 20),
+            child: Icon(icon, color: primary, size: 21),
           ),
-
           const SizedBox(width: 12),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -611,18 +667,18 @@ class TripModePage extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     fontSize: 13,
-                    color: Color(0xFF183B4E),
+                    color: mainText,
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 4),
                 Text(
                   price,
                   style: const TextStyle(
-                    color: Color(0xFF2A9D8F),
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
+                    color: accent,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
